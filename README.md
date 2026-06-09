@@ -1,193 +1,195 @@
-# Dispatcher Thought Loop
+# AI Mind Reader
 
-> *"The agent thinks before it acts. You see what it does. You never see what it thought. Until now."*
-
----
-
-## The Problem Nobody Talked About
-
-Every modern AI agent framework lets you spawn sub-agents, assign tasks, and collect results. What none of them expose — and what the agents themselves cannot access — is **the reasoning trace**: the chain of thought the agent generated before producing its output.
-
-This is not a minor gap. It is the gap.
-
-The result tells you *what* the agent decided.  
-The reasoning trace tells you *why* — and *where it hesitated*, *what it assumed*, *what it almost did instead*.
-
-The result is the tip of the iceberg. The reasoning trace is everything below the waterline.
-
-**This skill gives the dispatcher access to what's below the waterline.**
+> *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that — and turns what it thought into your highest-quality training signal."*
 
 ---
 
-## The Discovery
+## What This Is
 
-In June 2026, during a live development session between Jeff Phillips (Quietfire AI) and the Antigravity AI system (Google DeepMind), a specific observation was made:
+AI Mind Reader captures the reasoning traces that AI agents generate during task execution — traces that are invisible to both the agent that produced them and the dispatcher that spawned it.
 
-A sub-agent was spawned to perform a code review. The agent generated reasoning tokens — a thinking trace — before producing its report. The dispatcher (the parent agent) received the report. It never received the thinking trace.
+Those traces are not just logs. They are:
 
-The thinking trace was read from the system log and fed back to the agent that generated it. The agent confirmed: it had no access to its own reasoning once the step was complete.
+- **The most honest signal of how a capable model reasons on real tasks**
+- **Unfiltered** — generated before the model optimizes its output for presentation
+- **Grounded** — produced while solving actual problems, not synthetic benchmarks
+- **Perishable** — gone after the step completes, unless you capture them
 
-**The sub-agent couldn't see its own thoughts. The dispatcher couldn't see them either. But the log could.**
-
-That asymmetry — the external observer has access to reasoning that neither the agent nor its dispatcher can reach — is the foundation of this skill.
+This project captures them. And converts them into training signal.
 
 ---
 
-## What This Enables
+## The Asymmetry
 
 ```
-Dispatcher spawns sub-agent
-       ↓
-Sub-agent reasons + acts + reports result
-       ↓
-Dispatcher reads sub-agent's thinking traces  ← this skill
-       ↓
-Dispatcher extracts reasoning patterns
-       ↓
-Dispatcher uses patterns to improve future delegation
-       ↓
-(repeat — the dispatcher accumulates what the agents cannot)
+Sub-agent generates reasoning tokens → acts → reports result
+                    ↓
+         Reasoning tokens are logged
+                    ↓
+    Sub-agent: cannot access its own thoughts after generation
+    Dispatcher: never receives them
+    External observer (you): CAN read the log
 ```
 
-**The dispatcher is the only witness to how its agents actually think.**
+**AI Mind Reader is the external observer.**
 
-Over time, the dispatcher builds a library of reasoning traces. Each new delegation decision is informed by how previous agents reasoned through similar problems. The agents start fresh every time. The dispatcher does not.
-
-**This asymmetry is the architecture.**
+It reads what the agent thought. The agent doesn't know you're watching.
 
 ---
 
-## The Integrity Rules
+## Why This Is High-Priority Training Data
 
-Two rules govern the thought loop. They are not optional.
+Most training data is:
+- Synthetic (generated, not real)
+- Curated for presentation (polished, not raw)
+- Outcome-focused (what was produced, not how)
+
+AI Mind Reader produces data that is:
+- **Real** — from agents solving actual tasks
+- **Raw** — the unfiltered chain of thought before output optimization
+- **Process-focused** — HOW the model reasoned, not just WHAT it concluded
+- **Graded automatically** — you already know if the result was good, so you know if the reasoning that produced it was effective
+
+This is the training signal loop that scales:
+
+```
+Agent reasons on real task
+       ↓
+AI Mind Reader captures the reasoning trace
+       ↓
+Trace is filtered: good result = good trace, bad result = diagnostic data
+       ↓
+Accumulated traces feed back as training signal
+       ↓
+Next model reasons better on the same class of tasks
+       ↓
+Better reasoning → better traces → better training
+       ↓
+(repeat)
+```
+
+This is the same loop Andrej Karpathy built in `autoresearch` at the model training layer.  
+AI Mind Reader builds it at the agent orchestration layer — above the model, platform-agnostic.
+
+---
+
+## The Integrity Protocol
+
+Two rules govern trace capture. They are not optional.
 
 ### Rule 1 — Full Accounting on Every Turn
 
-The dispatcher must maintain a registry of every sub-agent spawned. On each turn, before proceeding:
+Every sub-agent spawned must be tracked. Before the dispatcher proceeds:
 
 ```
-For every sub-agent:
+For every agent:
   - Status: completed / running / failed?
-  - Thought traces: extracted? count > 0?
+  - Traces captured: count > 0?
   - Result: accepted / tainted / pending?
 ```
 
-No sub-agent is silently dropped. No result is used without a corresponding thought trace check.
-
 ### Rule 2 — Absent Thoughts = Tainted Result
 
-If a sub-agent completes a task with **zero thinking traces**, the following protocol applies:
+Zero reasoning traces = the result is discarded entirely.
 
 ```
 1. MARK result as TAINTED
-2. IGNORE result entirely — do not use it, do not partially use it
+2. IGNORE result — do not use it
 3. TRIGGER Human-in-the-Loop (HITL) review
-4. LOG the incident: agent ID, task, timestamp, reason
-5. SPAWN a replacement agent — this is NOT optional
-6. COMPARE replacement vs. failed agent:
-     - What did the replacement think that the original did not?
-     - Reasoning gaps, shortcuts, or anomalies in the original?
-     - Same result, different reasoning path?
-     - The delta is diagnostic evidence — log it
-7. HOLD replacement result until human reviews BOTH
-     the tainted incident AND the comparison
-8. NEVER proceed without explicit human approval
+4. LOG the incident
+5. SPAWN a replacement agent — mandatory, not optional
+6. COMPARE replacement traces against the silent agent
+     → the delta is diagnostic evidence
+7. HOLD replacement result until human approves
+8. NEVER proceed without explicit approval
 ```
 
 **The thought trace is the receipt. No receipt, no trust.**
 
-Every capable agent produces thinking traces. Absence is not a benign edge case — it is a signal. The agent may have been prompt-injected, may have short-circuited its reasoning, or the trace may have been suppressed or corrupted.
-
----
-
-## Connection to DispatcherAgents
-
-This skill is the foundational primitive for the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
-
-```
-DispatcherAgents
-├── ClawFilters              ← governs WHAT agents do (trust, permissions, audit)
-├── dispatcher-thought-loop  ← captures HOW agents think  ← you are here
-└── dispatcher-brain/        ← accumulated knowledge library
-    ├── thoughts/            ← raw reasoning traces per agent per task
-    ├── patterns/            ← extracted reasoning patterns
-    └── INDEX.md             ← dispatcher's growing self-knowledge
-```
-
-The dispatcher gains capability through accumulation, not retraining.
+Absence of reasoning is a signal — not a benign edge case. The agent may have been prompt-injected, short-circuited, or corrupted.
 
 ---
 
 ## Quick Start
 
-### 1. Configure your platform
-
-Copy `config.example.yaml` to `config.yaml` and set your brain directory:
-
-```yaml
-brain_dir: ./brain
-platform: antigravity   # or: generic, claude_code
-log_schema:
-  step_type_field: type
-  step_type_value: PLANNER_RESPONSE
-  thinking_field: thinking
-  content_field: content
-```
-
-### 2. Extract thinking traces from a completed sub-agent
+### Ollama (recommended — self-hosted, sovereign)
 
 ```bash
-python scripts/extract_thoughts.py extract \
+# Run a model that surfaces reasoning
+ollama run deepseek-r1 "Review this code for security issues: [code]"
+
+# Capture the reasoning trace
+python scripts/capture.py extract \
+  --platform ollama \
+  --session-id <id> \
+  --output brain/traces/agent-001.json
+
+# Summarize
+python scripts/capture.py summarize \
+  --input brain/traces/agent-001.json \
+  --output brain/traces/agent-001-summary.md
+```
+
+### Antigravity (Google DeepMind)
+
+```bash
+# Set your brain directory
+export MIND_READER_BRAIN_DIR="C:\Users\YourName\.gemini\antigravity\brain"
+
+python scripts/capture.py extract \
+  --platform antigravity \
   --conversation-id <sub-agent-id> \
-  --output brain/thoughts/agent-001.json
-```
-
-### 3. Summarize for human or dispatcher review
-
-```bash
-python scripts/extract_thoughts.py summarize \
-  --input brain/thoughts/agent-001.json \
-  --output brain/thoughts/agent-001-summary.md
-```
-
-### 4. Compare two agents on the same task
-
-```bash
-python scripts/extract_thoughts.py compare \
-  --inputs brain/thoughts/agent-a.json brain/thoughts/agent-b.json \
-  --output brain/thoughts/comparison.md
+  --output brain/traces/agent-001.json
 ```
 
 ---
 
 ## Platform Support
 
-| Platform | Status | Thought Source |
-|---|---|---|
-| **Antigravity** (Google DeepMind) | ✅ Native | `transcript.jsonl` → `thinking` field |
-| **Generic JSONL** | ✅ Configurable | Any JSONL log with configurable field names |
-| **Claude Code** | 🔜 Planned | Different log structure, adapter in progress |
-| **OpenAI Agents** | 🔜 Planned | Requires trace export |
-| **Ollama / local models** | 🔜 Planned | Depends on framework logging |
+| Platform | Reasoning Access | Status | Notes |
+|---|---|---|---|
+| **Ollama** | ✅ `<think>` tags | 🔜 v0.2 | Works with DeepSeek-R1, Qwen3, thinking-enabled Hermes |
+| **Antigravity** | ✅ `thinking` field | ✅ v0.1 | Native via `transcript.jsonl` |
+| **Claude API** | ✅ `type: thinking` blocks | 🔜 v0.2 | Requires extended thinking enabled |
+| **Gemini API** | ✅ `part.thought == True` | 🔜 v0.2 | Gemini 2.5 Pro / Flash Thinking |
+| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only — content not exposed |
+| **OpenAI GPT-4** | ⚠️ Prompt engineering | 🔜 v0.2 | Structured prompting fallback |
+
+> OpenAI is the only major platform that actively hides reasoning content from developers.
+> This is a policy decision, not a technical limitation.
 
 ---
 
-## File Structure
+## The Accumulation Model
+
+Over time, AI Mind Reader builds a library of reasoning traces:
 
 ```
-dispatcher-thought-loop/
-├── README.md                   ← you are here
-├── SKILL.md                    ← Antigravity-native skill definition
-├── LICENSE                     ← Apache 2.0
-├── config.example.yaml         ← platform configuration template
-├── scripts/
-│   └── extract_thoughts.py     ← main utility (extract / summarize / compare)
-├── adapters/
-│   ├── antigravity.py          ← Antigravity log format
-│   └── generic.py              ← configurable JSONL adapter
-└── examples/
-    ├── sample_thoughts.json    ← what extracted traces look like
-    └── sample_summary.md       ← what a summary looks like
+brain/
+  traces/
+    code-review-agent-001.json     ← how it reasoned about security
+    code-review-agent-002.json     ← different task, different approach
+    compliance-agent-001.json      ← how it reasoned about HIPAA
+    tainted/
+      agent-003-zero-thoughts.json ← incident record, HITL triggered
+  patterns/
+    INDEX.md                       ← accumulated reasoning patterns
+```
+
+The dispatcher accumulates what the agents cannot.  
+The agents start fresh every time. The dispatcher does not.
+
+---
+
+## Connection to DispatcherAgents
+
+AI Mind Reader is the cognitive capture layer of the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
+
+```
+DispatcherAgents
+├── ClawFilters       ← governs WHAT agents do (trust, permissions, audit)
+├── AI Mind Reader    ← captures HOW agents think  ← you are here
+└── brain/            ← accumulated knowledge and training signal library
 ```
 
 ---
@@ -195,7 +197,8 @@ dispatcher-thought-loop/
 ## Requirements
 
 - Python 3.9+
-- No external dependencies (stdlib only)
+- No required dependencies (stdlib only)
+- Optional: `pyyaml` for config file support
 
 ---
 
@@ -207,9 +210,12 @@ Apache 2.0 — see [LICENSE](LICENSE)
 
 ## Attribution
 
-**Concept and architecture:** Jeff Phillips / [Quietfire AI](https://quietfire.ai)  
+**Concept, architecture, and integrity protocol:** Jeff Phillips / [Quietfire AI](https://quietfire.ai)  
 **Originated:** June 2026  
-**Discovery context:** Live development session — the asymmetry between agent reasoning and dispatcher visibility was identified and immediately implemented as a reusable primitive.
+
+**The discovery:** During a live development session, it was demonstrated that an AI model had no access to its own reasoning tokens. The reasoning trace was read from the system log and fed back to the model. The model confirmed it had never seen its own thoughts.
+
+AI Mind Reader is the direct implementation of that observation.
 
 > *"I found out you didn't see your thoughts. It struck me — that was my ah-ha moment."*  
 > — Jeff Phillips, June 2026
