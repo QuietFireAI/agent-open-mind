@@ -68,8 +68,98 @@ Better reasoning → better traces → better training
 (repeat)
 ```
 
-This is the same loop Andrej Karpathy built in `autoresearch` at the model training layer.  
-AI Mind Reader builds it at the agent orchestration layer — above the model, platform-agnostic.
+This is the same loop being built at the model training layer in pretraining research.  
+AI Mind Reader builds it at the agent orchestration layer — above the model, platform-agnostic, self-hosted.
+
+---
+
+## Two Loops — Why This Is Different From Model Training
+
+There are two distinct improvement loops in AI systems. They operate at different
+layers, on different timescales, and require different infrastructure.
+
+**Loop 1 — Model Training** (requires a lab)
+```
+Training data → weight updates → frozen model → deployed
+
+Timescale: months
+Infrastructure: GPU cluster, RLHF pipeline, research team
+Output: a better base model
+Who runs it: AI labs
+```
+
+**Loop 2 — Agent Adaptation** (runs today, on your hardware)
+```
+Deployed agent reasons on real task
+       ↓
+AI Mind Reader captures the reasoning trace
+       ↓
+Dispatcher accumulates patterns — no weight change
+       ↓
+Better delegation → better agents → better traces
+
+Timescale: immediate (every inference)
+Infrastructure: the machine running your agents
+Output: a smarter dispatcher
+Who runs it: you
+```
+
+These loops are not competing. They are complementary — and they share a data source.
+
+The traces AI Mind Reader captures are **labeled real-world reasoning data**:
+- Real: from agents solving actual production tasks
+- Labeled: you already know if the outcome was good or bad
+- Unfiltered: raw chain-of-thought before output optimization
+- Grounded: not synthetic, not benchmark-contaminated
+
+Loop 2 consumes these traces immediately — the dispatcher learns from them
+without any retraining. Loop 1 can consume the same traces as training signal
+for the next model generation, if you have the infrastructure.
+
+**AI Mind Reader makes Loop 2 available to anyone running agents today.**  
+The path to Loop 1 is the same data, at scale.
+
+---
+
+## The Paradigm Shift
+
+Current AI development assumes a one-way street:
+
+```
+Lab trains model → ships frozen model → you use it → wait for next release
+```
+
+Adaptation today means prompting, RAG, or expensive fine-tuning — all of which
+still depend on the lab for the next meaningful capability jump.
+
+AI Mind Reader suggests a different architecture:
+
+```
+You deploy agents
+       ↓
+Agents reason on your real tasks (not benchmarks)
+       ↓
+AI Mind Reader captures the reasoning (continuous, automatic)
+       ↓
+Dispatcher accumulates patterns → improves next deployment
+       ↓
+High-quality labeled traces accumulate in your brain/
+       ↓
+Feed back to model training when ready (optional, at your pace)
+```
+
+In this model:
+- **Improvement is continuous** — not gated on the next model release
+- **Improvement is local** — your tasks, your traces, your brain/
+- **Improvement is sovereign** — the data stays on your hardware
+- **The lab becomes optional** — for the adaptation loop, not the base model
+
+This is what "instance learning" looks like in practice:
+learning that happens at inference time, without touching weights,
+accumulated by the dispatcher across every task it delegates.
+
+The agents start fresh every time. The dispatcher does not.
+The lab ships a frozen model. Your deployment improves continuously.
 
 ---
 
@@ -148,15 +238,16 @@ python scripts/capture.py extract \
 
 | Platform | Reasoning Access | Status | Notes |
 |---|---|---|---|
-| **Ollama** | ✅ `<think>` tags | 🔜 v0.2 | Works with DeepSeek-R1, Qwen3, thinking-enabled Hermes |
+| **Ollama** | ✅ `<think>` tags | ✅ v0.2 | DeepSeek-R1, Qwen3, thinking-enabled Hermes |
 | **Antigravity** | ✅ `thinking` field | ✅ v0.1 | Native via `transcript.jsonl` |
-| **Claude API** | ✅ `type: thinking` blocks | 🔜 v0.2 | Requires extended thinking enabled |
-| **Gemini API** | ✅ `part.thought == True` | 🔜 v0.2 | Gemini 2.5 Pro / Flash Thinking |
-| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only — content not exposed |
-| **OpenAI GPT-4** | ⚠️ Prompt engineering | 🔜 v0.2 | Structured prompting fallback |
+| **Claude API** | ✅ `type: thinking` blocks | ✅ v0.2 | Requires extended thinking enabled in API call |
+| **Gemini API** | ✅ `part.thought == True` | ✅ v0.2 | Gemini 2.5 Pro / Flash Thinking |
+| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only — content hidden by OpenAI policy |
+| **OpenAI GPT-4** | ⚠️ Prompt engineering | ✅ v0.2 | `CHAIN_OF_THOUGHT_SYSTEM_PROMPT` provided |
 
 > OpenAI is the only major platform that actively hides reasoning content from developers.
-> This is a policy decision, not a technical limitation.
+> This is a policy decision, not a technical limitation. Their reasoning models automatically
+> trigger the tainted-result protocol — the integrity rules apply equally to all platforms.
 
 ---
 
