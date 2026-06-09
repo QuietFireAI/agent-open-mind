@@ -1,0 +1,21 @@
+# API response logs — never commit these
+tests/logs/
+tests/results/
+
+# Brain directory — local accumulation, not for public repo
+brain/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Config with secrets
+config.yaml
+
+# OS
+.DS_Store
+Thumbs.db
