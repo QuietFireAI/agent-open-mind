@@ -1,0 +1,41 @@
+# Dispatcher Thought Loop — Platform Configuration
+# Copy this to config.yaml and adjust for your setup.
+
+# Path to the brain directory where agent logs and thought traces are stored.
+brain_dir: ./brain
+
+# Platform adapter. Options:
+#   antigravity   — Google DeepMind Antigravity system
+#   generic       — any JSONL log with configurable field names
+platform: generic
+
+# Log schema — field names in your platform's JSONL log format.
+# These defaults work for Antigravity. Adjust for other platforms.
+log_schema:
+  step_type_field: type              # field that identifies the step type
+  step_type_value: PLANNER_RESPONSE  # value that indicates a reasoning step
+  thinking_field: thinking           # field containing the reasoning trace
+  content_field: content             # field containing what the agent said aloud
+  step_index_field: step_index       # field for step sequence number
+  timestamp_field: created_at        # field for step timestamp
+  tool_calls_field: tool_calls       # field for tool calls array
+  tool_name_field: name              # field within each tool call for the tool name
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Platform-specific notes:
+#
+# ANTIGRAVITY (Google DeepMind):
+#   platform: antigravity
+#   Log path: <brain_dir>/<conversation_id>/.system_generated/logs/transcript.jsonl
+#   Set DISPATCHER_BRAIN_DIR to your Antigravity brain directory.
+#   Example: C:\Users\YourName\.gemini\antigravity\brain
+#
+# GENERIC JSONL:
+#   platform: generic
+#   Log path: <brain_dir>/<conversation_id>/transcript.jsonl
+#   Adjust log_schema fields to match your log format.
+#
+# CUSTOM PATH:
+#   Set DISPATCHER_LOG_PATH environment variable to point directly at a log file.
+#   This overrides all path resolution logic.
+# ─────────────────────────────────────────────────────────────────────────────

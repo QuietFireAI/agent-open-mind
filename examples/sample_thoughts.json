@@ -1,0 +1,31 @@
+{
+  "conversation_id": "example-agent-001",
+  "platform": "generic",
+  "log_path": "./brain/example-agent-001/transcript.jsonl",
+  "extracted_at": "2026-06-09T11:00:00Z",
+  "thought_count": 3,
+  "tainted": false,
+  "thoughts": [
+    {
+      "step_index": 1,
+      "created_at": "2026-06-09T11:00:01Z",
+      "thinking": "Let me start by understanding what the task actually requires before diving in. The user wants a code review of the authentication module. I should look at the import structure first, then check for common security issues like hardcoded credentials, SQL injection vectors, and async/await mistakes.",
+      "content": "I'll systematically review the authentication module, starting with imports and working through to security patterns.",
+      "tool_calls": ["view_file"]
+    },
+    {
+      "step_index": 3,
+      "created_at": "2026-06-09T11:01:14Z",
+      "thinking": "I noticed something interesting — the JWT secret is being loaded from an environment variable, which is correct, but there's no validation that the variable is actually set before use. If JWT_SECRET_KEY is missing, this will fail at runtime with an unhelpful error rather than at startup with a clear message. This is a medium-severity issue. I should also check whether the token expiration is being enforced or just generated.",
+      "content": "Found a potential issue with JWT secret validation — the secret is loaded but not verified to be present at startup.",
+      "tool_calls": ["view_file", "grep_search"]
+    },
+    {
+      "step_index": 5,
+      "created_at": "2026-06-09T11:02:33Z",
+      "thinking": "The token expiration check is there but it's comparing against the wrong timezone-aware datetime. The stored token uses UTC but the comparison uses local time. This is a real bug — tokens could appear expired on some systems. This should be elevated to high severity. I'm also noticing that the refresh token path doesn't invalidate the old token, which is a security issue.",
+      "content": "Found two issues: timezone mismatch in token expiration (high), and refresh path not invalidating old tokens (high).",
+      "tool_calls": ["view_file"]
+    }
+  ]
+}
