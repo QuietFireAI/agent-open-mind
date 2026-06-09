@@ -1,0 +1,26 @@
+# AI Mind Reader — Requirements
+#
+# No required dependencies. Core functionality runs on Python 3.9+ stdlib only.
+#
+# Install only what you need for your platform(s):
+
+# ── Ollama ────────────────────────────────────────────────────────────────────
+# ollama>=0.3.0
+
+# ── Claude API (Anthropic) ────────────────────────────────────────────────────
+# anthropic>=0.34.0
+
+# ── Gemini API (Google) ───────────────────────────────────────────────────────
+# google-genai>=0.7.0
+
+# ── OpenAI / OpenRouter ───────────────────────────────────────────────────────
+# openai>=1.40.0
+
+# ── Config file support ───────────────────────────────────────────────────────
+# pyyaml>=6.0
+
+# ── Validation suite (runs all adapters) ─────────────────────────────────────
+# ollama>=0.3.0
+# anthropic>=0.34.0
+# google-genai>=0.7.0
+# openai>=1.40.0

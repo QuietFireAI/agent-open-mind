@@ -7,7 +7,7 @@ from .ollama import OllamaAdapter
 from .claude_api import ClaudeAdapter
 from .gemini_api import GeminiAdapter
 from .openai_api import OpenAIAdapter
-from .self import SelfAdapter
+from .self_adapter import SelfAdapter
 
 ADAPTERS = {
     "ollama": OllamaAdapter,
@@ -37,5 +37,6 @@ __all__ = [
     "ClaudeAdapter",
     "GeminiAdapter",
     "OpenAIAdapter",
+    "SelfAdapter",
     "get_adapter",
 ]

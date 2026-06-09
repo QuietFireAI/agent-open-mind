@@ -205,20 +205,56 @@ Absence of reasoning is a signal — not a benign edge case. The agent may have 
 ### Ollama (recommended — self-hosted, sovereign)
 
 ```bash
-# Run a model that surfaces reasoning
+# 1. Run a model that surfaces reasoning
 ollama run deepseek-r1 "Review this code for security issues: [code]"
 
-# Capture the reasoning trace
-python scripts/capture.py extract \
+# 2. Capture the reasoning trace
+python scripts/extract_thoughts.py extract \
   --platform ollama \
-  --session-id <id> \
+  --conversation-id <session-id> \
   --output brain/traces/agent-001.json
 
-# Summarize
-python scripts/capture.py summarize \
+# 3. Summarize to readable markdown
+python scripts/extract_thoughts.py summarize \
   --input brain/traces/agent-001.json \
   --output brain/traces/agent-001-summary.md
+
+# 4. Read your own dispatcher thoughts between turns
+export MIND_READER_OWN_ID="your-dispatcher-session-id"
+python scripts/self_reflect.py inject --last-n 5
 ```
+
+### Hermes via OpenRouter
+
+OpenRouter exposes an OpenAI-compatible API — use the OpenAI adapter
+with a custom base URL:
+
+```python
+from openai import OpenAI
+from adapters.openai_api import OpenAIAdapter, CHAIN_OF_THOUGHT_SYSTEM_PROMPT
+
+client = OpenAI(
+    api_key="your-openrouter-key",
+    base_url="https://openrouter.ai/api/v1",
+)
+
+response = client.chat.completions.create(
+    model="nousresearch/hermes-3-llama-3.1-405b",
+    messages=[
+        {"role": "system", "content": CHAIN_OF_THOUGHT_SYSTEM_PROMPT},
+        {"role": "user",   "content": "Your task here..."},
+    ],
+)
+
+result = OpenAIAdapter.from_api_response(response)
+print(result.thinking)   # extracted chain-of-thought
+print(result.content)    # clean output
+```
+
+> **Note:** Hermes 3 does not natively emit `<think>` tags in the same way
+> DeepSeek-R1 does via Ollama. The `CHAIN_OF_THOUGHT_SYSTEM_PROMPT` elicits
+> explicit reasoning in the output. For native thinking token support,
+> run Hermes locally via Ollama once your GPU is ready.
 
 ### Antigravity (Google DeepMind)
 
@@ -226,7 +262,7 @@ python scripts/capture.py summarize \
 # Set your brain directory
 export MIND_READER_BRAIN_DIR="C:\Users\YourName\.gemini\antigravity\brain"
 
-python scripts/capture.py extract \
+python scripts/extract_thoughts.py extract \
   --platform antigravity \
   --conversation-id <sub-agent-id> \
   --output brain/traces/agent-001.json
@@ -353,8 +389,6 @@ Dispatcher knows:
 
 This is a genuinely different kind of system.
 ```
-
----
 
 
 ---
