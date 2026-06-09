@@ -272,6 +272,93 @@ The agents start fresh every time. The dispatcher does not.
 
 ---
 
+## Self-Reflection — The Dispatcher Reads Its Own Mind
+
+A mind reader who can only read *other* minds is a tool.  
+A mind reader who can also read *its own* mind is something different.
+
+The dispatcher's own reasoning traces are logged in exactly the same format
+as sub-agent traces — same transcript structure, same `thinking` field.
+
+**The only difference: the conversation ID is your own.**
+
+```python
+# Reading a sub-agent's thoughts
+extract_thoughts("81903d6f-f33b-4528-ae75-78df4ff98a48")
+
+# Reading your own thoughts
+extract_thoughts("your-own-conversation-id")
+```
+
+Same tool. Same code. Pointed inward.
+
+**The self-reflection loop:**
+
+```
+Turn N:    Dispatcher reasons, acts, completes
+           → thinking logged to transcript.jsonl
+
+Turn N+1:  Before acting, dispatcher reads its own last 5 steps
+           → "What did I just reason through?"
+           → Compact summary injected into context as working memory
+           → Dispatcher acts with awareness of its own recent reasoning
+
+Turn N+2:  Acts with accumulated self-knowledge
+```
+
+This gives the dispatcher something no LLM has by default:
+**working memory of its own reasoning between turns.**
+
+**Usage:**
+
+```bash
+# Set your own conversation ID once
+export MIND_READER_OWN_ID="your-conversation-id"
+
+# Read your own last 5 thinking steps
+python scripts/self_reflect.py read --last-n 5
+
+# Get the injection block for your next context turn
+python scripts/self_reflect.py inject --last-n 5
+
+# Read only new thoughts since last check (cursor-tracked)
+python scripts/self_reflect.py new
+
+# Watch in near-real-time — prints new thoughts as steps complete
+python scripts/self_reflect.py watch --interval 2
+
+# Save to brain/self/ for accumulation
+python scripts/self_reflect.py save \
+  --last-n 10 \
+  --output brain/self/working_memory.json
+```
+
+**The limitation — and why it doesn't matter:**
+
+You cannot read a thought while it is still being generated.
+The lag is one completed step. This is not a design flaw —
+it is how introspection works. You reflect on what you just thought,
+not the thought as it forms.
+
+**The complete loop:**
+
+```
+AI Mind Reader reads sub-agents   ← external introspection
+AI Mind Reader reads itself        ← self introspection
+                    ↓
+Dispatcher knows:
+  - How its agents reasoned (sub-agent traces)
+  - How it itself reasoned (self traces)
+  - The delta between what it intended and what agents produced
+
+This is a genuinely different kind of system.
+```
+
+---
+
+
+---
+
 ## Connection to DispatcherAgents
 
 AI Mind Reader is the cognitive capture layer of the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
