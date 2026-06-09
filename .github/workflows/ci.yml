@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    name: Unit tests — Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Verify no required dependencies
+        run: |
+          # Core must import with zero pip installs
+          python -c "from adapters import OllamaAdapter, ClaudeAdapter, GeminiAdapter, OpenAIAdapter, SelfAdapter, get_adapter; print('All adapters import OK')"
+
+      - name: Run unit tests
+        run: |
+          python -m pytest tests/unit/ -v --tb=short
+
+  lint:
+    name: Syntax check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Check syntax — adapters
+        run: python -m py_compile adapters/*.py adapters/__init__.py
+
+      - name: Check syntax — scripts
+        run: python -m py_compile scripts/*.py
+
+      - name: Check syntax — tests
+        run: python -m py_compile tests/validate_adapters.py

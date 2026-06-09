@@ -1,0 +1,71 @@
+name: New Platform Adapter
+description: Request or propose an adapter for a platform not yet covered
+title: "[Adapter] "
+labels: ["adapter", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The highest-value contribution is a new working adapter.
+        If you know how the platform exposes reasoning content, this template
+        will capture everything needed to build or review it.
+
+  - type: input
+    id: platform_name
+    attributes:
+      label: Platform name
+      placeholder: "e.g. Mistral API, Cohere, Bedrock, LM Studio"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reasoning_access
+    attributes:
+      label: Does this platform expose reasoning content?
+      options:
+        - "Yes — full reasoning content available"
+        - "Partial — token count only, no content"
+        - "Unknown — needs investigation"
+        - "No — reasoning is hidden"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reasoning_format
+    attributes:
+      label: How does reasoning appear in the response?
+      description: Paste the relevant API docs or a sample response showing where thinking lives.
+      placeholder: |
+        # Example: reasoning appears as a separate field
+        {
+          "thinking": "Let me consider...",
+          "output": "Based on my analysis..."
+        }
+
+        # Or: embedded tags
+        "<think>Let me consider...</think>Based on my analysis..."
+    validations:
+      required: true
+
+  - type: input
+    id: api_docs
+    attributes:
+      label: API documentation link
+      placeholder: "https://docs.platform.com/reasoning"
+
+  - type: dropdown
+    id: can_implement
+    attributes:
+      label: Can you implement this adapter?
+      options:
+        - "Yes — I'll open a PR"
+        - "Maybe — I need guidance"
+        - "No — submitting for someone else to implement"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: SDK names, model names that support thinking, any gotchas you know about.

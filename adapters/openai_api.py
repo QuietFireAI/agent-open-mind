@@ -110,7 +110,7 @@ class OpenAIAdapter:
 
         # Extract reasoning token count
         try:
-            if hasattr(response, "usage"):
+            if hasattr(response, "usage") and not isinstance(response, dict):
                 usage = response.usage
                 if hasattr(usage, "completion_tokens_details"):
                     details = usage.completion_tokens_details
@@ -120,6 +120,12 @@ class OpenAIAdapter:
                         usage.get("completion_tokens_details", {})
                         .get("reasoning_tokens", 0) or 0
                     )
+            elif isinstance(response, dict):
+                usage = response.get("usage", {})
+                reasoning_tokens = (
+                    usage.get("completion_tokens_details", {})
+                    .get("reasoning_tokens", 0) or 0
+                )
         except (AttributeError, TypeError):
             reasoning_tokens = 0
 
@@ -128,16 +134,16 @@ class OpenAIAdapter:
         is_reasoning_model = any(model.lower().startswith(m) for m in _REASONING_MODELS)
 
         if is_reasoning_model:
-            # Reasoning model: content hidden by OpenAI policy
-            tainted = reasoning_tokens > 0  # reasoning happened but we can't see it
+            # Reasoning model: content ALWAYS hidden by OpenAI policy.
+            # Tainted regardless of token count — the policy hides content
+            # whether or not we can measure how much reasoning occurred.
             return OpenAIThoughtResult(
                 thinking="",
                 content=content,
                 reasoning_tokens=reasoning_tokens,
                 model=model,
-                tainted=tainted,
-                limitation_note=_OPENAI_LIMITATION if tainted else
-                    "No reasoning tokens detected. Standard tainted result rules apply.",
+                tainted=True,  # always — OpenAI policy, not token count
+                limitation_note=_OPENAI_LIMITATION,
             )
         else:
             # GPT-4 / standard model: try to parse <think> tags from output

@@ -1,0 +1,78 @@
+name: Bug Report
+description: Adapter not capturing reasoning correctly, or capturing incorrect output
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: check that the model you're using actually emits reasoning tokens.
+        Not all models do — see the platform table in the README.
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Ollama
+        - Claude API (Anthropic)
+        - Gemini API (Google)
+        - OpenAI
+        - OpenRouter
+        - Antigravity
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: model
+    attributes:
+      label: Model name
+      placeholder: "e.g. deepseek-r1, claude-sonnet-4-5, gemini-2.5-pro"
+    validations:
+      required: true
+
+  - type: textarea
+    id: raw_response
+    attributes:
+      label: Raw API response (sanitized)
+      description: |
+        Paste the raw response object. Remove any API keys or personal data.
+        For Ollama, paste the `.response` field. For Claude, paste the `.content` array.
+      placeholder: |
+        {
+          "model": "deepseek-r1",
+          "response": "<think>...</think>Here is my answer..."
+        }
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      placeholder: "thinking field should contain '...', content should contain '...'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      placeholder: "thinking was empty, content contained the raw <think> tags..."
+    validations:
+      required: true
+
+  - type: input
+    id: python_version
+    attributes:
+      label: Python version
+      placeholder: "3.11.4"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else — adapter version, platform SDK version, etc.
