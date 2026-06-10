@@ -28,6 +28,8 @@ Environment:
     DISPATCHER_BRAIN_DIR     Path to brain directory
 """
 
+from __future__ import annotations
+
 import json
 import os
 import time

@@ -17,6 +17,8 @@ Configuration (config.yaml or env vars):
   DISPATCHER_LOG_PATH      Full path to log file (overrides brain dir)
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
