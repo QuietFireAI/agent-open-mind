@@ -28,6 +28,9 @@ jobs:
           # Core must import with zero pip installs
           python -c "from adapters import OllamaAdapter, ClaudeAdapter, GeminiAdapter, OpenAIAdapter, SelfAdapter, get_adapter; print('All adapters import OK')"
 
+      - name: Install test dependencies
+        run: pip install pytest
+
       - name: Run unit tests
         run: |
           python -m pytest tests/unit/ -v --tb=short
