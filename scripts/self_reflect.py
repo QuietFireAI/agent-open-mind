@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 AI Mind Reader — Self Reflect
 The dispatcher reads its own thoughts between turns.
@@ -8,7 +8,7 @@ AND its own. The same tool. Pointed inward.
 
 Commands:
   self_reflect.py read    --conversation-id <id> [--last-n 5]
-  self_reflect.py inject  --conversation-id <id> [--last-n 5]
+  self_reflect.py reflect --conversation-id <id> [--last-n 5]
   self_reflect.py new     --conversation-id <id>
   self_reflect.py watch   --conversation-id <id> [--interval 2]
   self_reflect.py save    --conversation-id <id> [--last-n 5] --output <file>
@@ -20,7 +20,7 @@ Configuration:
 Typical dispatcher workflow:
   1. Complete a set of sub-agent tasks
   2. Before next delegation, run:
-       python scripts/self_reflect.py inject --last-n 5
+       python scripts/self_reflect.py reflect --last-n 5
   3. Prepend the output to your next context turn
   4. Dispatcher now knows what it just reasoned through
 """
@@ -74,15 +74,15 @@ def cmd_read(adapter: SelfAdapter, last_n: int):
     print(f"Total: {len(steps)} step(s) shown")
 
 
-def cmd_inject(adapter: SelfAdapter, last_n: int):
+def cmd_reflect(adapter: SelfAdapter, last_n: int):
     """
-    Print the injection block — ready to prepend to the next dispatcher context.
+    Print the reflection block — ready to prepend to the next dispatcher context.
     
     Pipe this into your dispatcher's next turn to give it working memory
     of its own recent reasoning.
     
     Example:
-        python scripts/self_reflect.py inject --last-n 5 > /tmp/my_thoughts.md
+        python scripts/self_reflect.py reflect --last-n 5 > /tmp/my_thoughts.md
         # Then prepend /tmp/my_thoughts.md to next context
     """
     steps = adapter.read_recent(last_n=last_n)
@@ -91,7 +91,7 @@ def cmd_inject(adapter: SelfAdapter, last_n: int):
         print("<!-- No own thoughts available yet -->")
         return
 
-    print(adapter.format_for_injection(steps))
+    print(adapter.format_for_reflection(steps))
 
 
 def cmd_new(adapter: SelfAdapter):
@@ -156,7 +156,7 @@ def cmd_save(adapter: SelfAdapter, last_n: int, output_path: str):
 
     # Also write a markdown summary alongside
     md_path = out.with_suffix(".md")
-    injection = adapter.format_for_injection(steps)
+    injection = adapter.format_for_reflection(steps)
     md_path.write_text(injection, encoding="utf-8")
     print(f"Summary → {md_path.resolve()}")
 
@@ -204,11 +204,11 @@ works too.
                         help="How many recent steps to read (default: 5)")
 
     # inject
-    p_inject = subparsers.add_parser(
-        "inject",
-        help="Print injection block for prepending to next context turn"
+    p_reflect = subparsers.add_parser(
+        "reflect",
+        help="Print reflection block for prepending to next context turn"
     )
-    p_inject.add_argument("--last-n", type=int, default=5)
+    p_reflect.add_argument("--last-n", type=int, default=5)
 
     # new
     subparsers.add_parser("new", help="Print only thoughts newer than last cursor position")
@@ -247,8 +247,8 @@ works too.
     # Dispatch
     if args.command == "read":
         cmd_read(adapter, args.last_n)
-    elif args.command == "inject":
-        cmd_inject(adapter, args.last_n)
+    elif args.command == "reflect":
+        cmd_reflect(adapter, args.last_n)
     elif args.command == "new":
         cmd_new(adapter)
     elif args.command == "watch":

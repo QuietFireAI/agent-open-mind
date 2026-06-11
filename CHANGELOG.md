@@ -1,4 +1,4 @@
-# Changelog
+﻿# Changelog
 
 All notable changes to AI Mind Reader are documented here.
 
@@ -10,11 +10,11 @@ All notable changes to AI Mind Reader are documented here.
 - `adapters/self_adapter.py` — dispatcher reads its own reasoning traces
   - `ReadCursor`: tracks read position so only new thoughts are read each time
   - `read_all()`, `read_recent(last_n)`, `read_new()` (cursor-aware)
-  - `format_for_injection()` — compact working memory block for context prepend
+  - `format_for_reflection()` — compact working memory block for context prepend
   - `watch()` — near-real-time self-monitoring with configurable poll interval
 - `scripts/self_reflect.py` — CLI for dispatcher self-reflection
   - `read`   — print own recent thoughts
-  - `inject` — format for context injection into next turn
+  - `inject` — format for context reflection into next turn
   - `new`    — only thoughts newer than cursor position
   - `watch`  — near-real-time monitoring
   - `save`   — persist to `brain/self/` for accumulation

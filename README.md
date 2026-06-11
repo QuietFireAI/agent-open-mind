@@ -232,7 +232,7 @@ python scripts/extract_thoughts.py summarize \
 
 # 4. Read your own dispatcher thoughts between turns
 export MIND_READER_OWN_ID="your-dispatcher-session-id"
-python scripts/self_reflect.py inject --last-n 5
+python scripts/self_reflect.py reflect --last-n 5
 ```
 
 ### Hermes via OpenRouter
@@ -368,8 +368,8 @@ export MIND_READER_OWN_ID="your-conversation-id"
 # Read your own last 5 thinking steps
 python scripts/self_reflect.py read --last-n 5
 
-# Get the injection block for your next context turn
-python scripts/self_reflect.py inject --last-n 5
+# Get the reflection block for your next context turn
+python scripts/self_reflect.py reflect --last-n 5
 
 # Read only new thoughts since last check (cursor-tracked)
 python scripts/self_reflect.py new

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Unit tests for AI Mind Reader adapters.
 No API keys required — tests parse known inputs only.
 """
@@ -228,7 +228,7 @@ class TestSelfAdapter:
         from adapters.self_adapter import SelfAdapter
         self.SelfAdapter = SelfAdapter
 
-    def test_format_for_injection_empty(self):
+    def test_format_for_reflection_empty(self):
         # When no steps, returns empty string
         import os
         os.environ["MIND_READER_OWN_ID"] = "test-conv-id"
@@ -236,10 +236,10 @@ class TestSelfAdapter:
             conversation_id="test-conv-id",
             brain_dir="./brain_test",
         )
-        result = adapter.format_for_injection([])
+        result = adapter.format_for_reflection([])
         assert result == ""
 
-    def test_format_for_injection_with_steps(self):
+    def test_format_for_reflection_with_steps(self):
         import os
         os.environ["MIND_READER_OWN_ID"] = "test-conv-id"
         adapter = self.SelfAdapter(
@@ -255,7 +255,7 @@ class TestSelfAdapter:
                 "tool_calls": ["view_file"],
             }
         ]
-        result = adapter.format_for_injection(steps)
+        result = adapter.format_for_reflection(steps)
         assert "Step 5" in result
         assert "auth module" in result
         assert "view_file" in result
@@ -275,6 +275,6 @@ class TestSelfAdapter:
             "content": "",
             "tool_calls": [],
         }]
-        result = adapter.format_for_injection(steps, max_chars_per_thought=100)
+        result = adapter.format_for_reflection(steps, max_chars_per_thought=100)
         assert "..." in result
         assert len([line for line in result.split("\n") if "A" * 500 in line]) == 0

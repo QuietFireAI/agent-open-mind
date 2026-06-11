@@ -1,4 +1,4 @@
-"""
+﻿"""
 AI Mind Reader — Self Adapter
 
 The dispatcher reading its own thoughts.
@@ -12,7 +12,7 @@ The only difference: the conversation ID is your own.
 Key behaviors beyond the standard adapter:
   - last_n:  read only the most recent N thinking steps (working memory window)
   - cursor:  track which steps have been read to avoid re-reading old thoughts
-  - inject:  format output for direct context injection into the next turn
+  - inject:  format output for direct context reflection into the next turn
   - watch:   monitor transcript for new thoughts as they're written (near real-time)
 
 Usage:
@@ -21,7 +21,7 @@ Usage:
     # Read own last 5 thoughts
     adapter = SelfAdapter(conversation_id="your-own-conv-id")
     thoughts = adapter.read_recent(last_n=5)
-    injection = adapter.format_for_injection(thoughts)
+    injection = adapter.format_for_reflection(thoughts)
 
 Environment:
     MIND_READER_OWN_ID       Your dispatcher conversation ID
@@ -194,13 +194,13 @@ class SelfAdapter:
             self.cursor.advance(latest_idx)
         return new_steps
 
-    def format_for_injection(
+    def format_for_reflection(
         self,
         steps: list[dict],
         max_chars_per_thought: int = 300,
     ) -> str:
         """
-        Format own recent thoughts for injection into the next turn's context.
+        Format own recent thoughts for reflection into the next turn's context.
 
         Compact enough to fit in context without dominating it.
         Structured so the dispatcher can quickly orient itself.
