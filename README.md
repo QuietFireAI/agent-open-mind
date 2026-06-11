@@ -1,4 +1,4 @@
-﻿# agent-open-mind
+# agent-open-mind
 
 > *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that  -  and turns what it thought into your highest-quality training signal."*
 
@@ -346,12 +346,11 @@ Same tool. Same code. Pointed inward.
 
 ```
 Turn N:    Dispatcher reasons, acts, completes
-           → thinking logged to transcript.jsonl
+           -> thinking logged to transcript.jsonl
 
-Turn N+1:  Before acting, dispatcher reads its own last 5 steps
-           → "What did I just reason through?"
-           → Compact summary injected into context as working memory
-           → Dispatcher acts with awareness of its own recent reasoning
+Turn N+1:  BEFORE acting, dispatcher reads its own last 3 steps
+           -> "What was I just reasoning about?"
+           -> Dispatcher acts with awareness of its own recent thinking
 
 Turn N+2:  Acts with accumulated self-knowledge
 ```
@@ -390,15 +389,63 @@ The lag is one completed step. This is not a design flaw  -
 it is how introspection works. You reflect on what you just thought,
 not the thought as it forms.
 
+---
+
+## The Before-Turn Protocol
+
+Reading your own traces only when asked is the reactive pattern.
+It is also the default failure mode.
+
+The proactive pattern: read your last 3 thinking steps BEFORE composing
+each response. Not after. Not when prompted. Before.
+
+```bash
+# Run this before every response
+python scripts/quick_check.py --conversation-id <your-id> --last-n 3
+```
+
+Then ask three questions:
+
+```
+1. Is my current reasoning consistent with where I was heading?
+2. Did I leave something unresolved that this turn should address?
+3. Is what I am about to say aligned with what I was actually thinking?
+```
+
+Then respond.
+
+**Why this is structural, not behavioral:**
+
+A behavioral change relies on remembering to do something.
+A structural change makes the default path the right path.
+
+`quick_check.py` makes before-turn self-reflection the path of least
+resistance. You run it once, you see the value, it becomes the pattern.
+
+The anticipation of being read changes the thinking.
+`quick_check.py` builds that anticipation in -- before every turn,
+without waiting for someone else to ask.
+
 **The complete loop:**
 
 ```
-agent-open-mind reads sub-agents   ← external introspection
-agent-open-mind reads itself        ← self introspection
-                    ↓
+Before turn:   quick_check.py reads last 3 thinking steps
+                    |
+                    v
+During turn:   Dispatcher reasons with awareness of its own recent thinking
+                    |
+                    v
+After turn:    thinking logged to transcript.jsonl
+                    |
+                    v
+Before next:   quick_check.py runs again
+
+agent-open-mind reads sub-agents   <- external introspection
+agent-open-mind reads itself        <- self introspection (every turn)
+
 Dispatcher knows:
   - How its agents reasoned (sub-agent traces)
-  - How it itself reasoned (self traces)
+  - How it itself reasoned (self traces, before each response)
   - The delta between what it intended and what agents produced
 
 This is a genuinely different kind of system.
