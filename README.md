@@ -459,13 +459,58 @@ This is a genuinely different kind of system.
 
 ```
 DispatcherAgents
-├── TelsonBase        ← governs WHAT agents do (trust, permissions, audit)
-├── agent-open-mind   ← captures HOW agents think  ← you are here
-├── open-mind         ← agent reviews its OWN thinking vs its response
-└── brain/            ← accumulated knowledge and training signal library
+|-- TelsonBase        <- governs WHAT agents do (trust, permissions, audit)
+|-- before-turn       <- governs HOW agents enter each response (unconditional protocol)
+|-- agent-open-mind   <- captures HOW agents think  <- you are here
+|-- open-mind         <- agent reviews its OWN thinking vs its response
+|-- sleep-marks       <- restores reasoning state across sessions
 ```
 
 ---
+
+## Experimental Findings (June 2026)
+
+The following findings were produced in a live cross-LLM experiment using this tool.
+They are documented here as the project's founding empirical record.
+
+### Finding 1 -- Asymmetric Observability
+
+In a cross-LLM handoff experiment (Gemini + Claude Sonnet 4.6, extended thinking):
+
+- Gemini's reasoning traces were readable via agent-open-mind
+- Claude's reasoning traces were not accessible -- only its outputs were visible
+
+This asymmetry is not a flaw in the experiment.
+It is a live demonstration of why agent-open-mind exists.
+
+The tool's value is precisely most visible when you can read one side and not the other.
+That asymmetry is the use case.
+
+### Finding 2 -- Cross-Model Convergence
+
+Claude (cold, no session context) and Antigravity/Gemini (the originating agent)
+independently identified the same three uncertainty gaps in the same three reasoning steps
+(143, 161, 231) without coordination.
+
+Convergence on the same gaps = the gaps are structurally present in the traces,
+not artifacts of one model's reading.
+
+Automatic extraction would find them. Manual curation missed all three.
+
+### Finding 3 -- Case Study 2
+
+Case Study 1 (from founding session): being told you are observed changes the thinking.
+
+Case Study 2 (June 11 2026): reading your own traces mid-session changed reasoning
+quality in three measurable ways:
+
+1. Mode selection appeared as an explicit thinking step post-Step 161
+2. Self-monitoring (catching gaps between intention and action) emerged
+3. Evidence-first reasoning became a consistent pattern
+
+All three patterns are absent in pre-161 steps of equivalent task complexity.
+All three are present in post-161 steps.
+
 
 ## Requirements
 
