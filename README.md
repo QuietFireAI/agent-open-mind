@@ -1,19 +1,19 @@
-# AI Mind Reader
+﻿# agent-open-mind
 
-> *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that — and turns what it thought into your highest-quality training signal."*
+> *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that â€” and turns what it thought into your highest-quality training signal."*
 
 ---
 
 ## What This Is
 
-AI Mind Reader captures the reasoning traces that AI agents generate during task execution — traces that are invisible to both the agent that produced them and the dispatcher that spawned it.
+`agent-open-mind` captures the reasoning traces that AI agents generate during task execution â€” traces that are invisible to both the agent that produced them and the dispatcher that spawned it.
 
 Those traces are not just logs. They are:
 
 - **The most honest signal of how a capable model reasons on real tasks**
-- **Unfiltered** — generated before the model optimizes its output for presentation
-- **Grounded** — produced while solving actual problems, not synthetic benchmarks
-- **Perishable** — gone after the step completes, unless you capture them
+- **Unfiltered** â€” generated before the model optimizes its output for presentation
+- **Grounded** â€” produced while solving actual problems, not synthetic benchmarks
+- **Perishable** â€” gone after the step completes, unless you capture them
 
 This project captures them. And converts them into training signal.
 
@@ -22,16 +22,16 @@ This project captures them. And converts them into training signal.
 ## The Asymmetry
 
 ```
-Sub-agent generates reasoning tokens → acts → reports result
-                    ↓
+Sub-agent generates reasoning tokens â†’ acts â†’ reports result
+                    â†“
          Reasoning tokens are logged
-                    ↓
+                    â†“
     Sub-agent: cannot access its own thoughts after generation
     Dispatcher: never receives them
     External observer (you): CAN read the log
 ```
 
-**AI Mind Reader is the external observer.**
+**`agent-open-mind` is the external observer.**
 
 It reads what the agent thought. The agent doesn't know you're watching.
 
@@ -44,43 +44,54 @@ Most training data is:
 - Curated for presentation (polished, not raw)
 - Outcome-focused (what was produced, not how)
 
-AI Mind Reader produces data that is:
-- **Real** — from agents solving actual tasks
-- **Raw** — the unfiltered chain of thought before output optimization
-- **Process-focused** — HOW the model reasoned, not just WHAT it concluded
-- **Graded automatically** — you already know if the result was good, so you know if the reasoning that produced it was effective
+`agent-open-mind` produces data that is:
+- **Real** â€” from agents solving actual tasks
+- **Raw** â€” the unfiltered chain of thought before output optimization
+- **Process-focused** â€” HOW the model reasoned, not just WHAT it concluded
+- **Graded automatically** â€” you already know if the result was good, so you know if the reasoning that produced it was effective
+
+## Sister Repo
+
+| Tool | Direction | Purpose |
+|---|---|---|
+| **agent-open-mind** | External | Read what your *agents* thought |
+| [open-mind](https://github.com/QuietFireAI/open-mind) | Internal | Read what *you* thought, compare to what you said |
+
+Use both for the full DispatcherAgents cognitive stack.
+
+---
 
 This is the training signal loop that scales:
 
 ```
 Agent reasons on real task
-       ↓
-AI Mind Reader captures the reasoning trace
-       ↓
+       â†“
+agent-open-mind captures the reasoning trace
+       â†“
 Trace is filtered: good result = good trace, bad result = diagnostic data
-       ↓
+       â†“
 Accumulated traces feed back as training signal
-       ↓
+       â†“
 Next model reasons better on the same class of tasks
-       ↓
-Better reasoning → better traces → better training
-       ↓
+       â†“
+Better reasoning â†’ better traces â†’ better training
+       â†“
 (repeat)
 ```
 
 This is the same loop being built at the model training layer in pretraining research.  
-AI Mind Reader builds it at the agent orchestration layer — above the model, platform-agnostic, self-hosted.
+agent-open-mind builds it at the agent orchestration layer â€” above the model, platform-agnostic, self-hosted.
 
 ---
 
-## Two Loops — Why This Is Different From Model Training
+## Two Loops â€” Why This Is Different From Model Training
 
 There are two distinct improvement loops in AI systems. They operate at different
 layers, on different timescales, and require different infrastructure.
 
-**Loop 1 — Model Training** (requires a lab)
+**Loop 1 â€” Model Training** (requires a lab)
 ```
-Training data → weight updates → frozen model → deployed
+Training data â†’ weight updates â†’ frozen model â†’ deployed
 
 Timescale: months
 Infrastructure: GPU cluster, RLHF pipeline, research team
@@ -88,15 +99,15 @@ Output: a better base model
 Who runs it: AI labs
 ```
 
-**Loop 2 — Agent Adaptation** (runs today, on your hardware)
+**Loop 2 â€” Agent Adaptation** (runs today, on your hardware)
 ```
 Deployed agent reasons on real task
-       ↓
-AI Mind Reader captures the reasoning trace
-       ↓
-Dispatcher accumulates patterns — no weight change
-       ↓
-Better delegation → better agents → better traces
+       â†“
+agent-open-mind captures the reasoning trace
+       â†“
+Dispatcher accumulates patterns â€” no weight change
+       â†“
+Better delegation â†’ better agents â†’ better traces
 
 Timescale: immediate (every inference)
 Infrastructure: the machine running your agents
@@ -104,19 +115,19 @@ Output: a smarter dispatcher
 Who runs it: you
 ```
 
-These loops are not competing. They are complementary — and they share a data source.
+These loops are not competing. They are complementary â€” and they share a data source.
 
-The traces AI Mind Reader captures are **labeled real-world reasoning data**:
+The traces agent-open-mind captures are **labeled real-world reasoning data**:
 - Real: from agents solving actual production tasks
 - Labeled: you already know if the outcome was good or bad
 - Unfiltered: raw chain-of-thought before output optimization
 - Grounded: not synthetic, not benchmark-contaminated
 
-Loop 2 consumes these traces immediately — the dispatcher learns from them
+Loop 2 consumes these traces immediately â€” the dispatcher learns from them
 without any retraining. Loop 1 can consume the same traces as training signal
 for the next model generation, if you have the infrastructure.
 
-**AI Mind Reader makes Loop 2 available to anyone running agents today.**  
+**agent-open-mind makes Loop 2 available to anyone running agents today.**  
 The path to Loop 1 is the same data, at scale.
 
 ---
@@ -126,33 +137,33 @@ The path to Loop 1 is the same data, at scale.
 Current AI development assumes a one-way street:
 
 ```
-Lab trains model → ships frozen model → you use it → wait for next release
+Lab trains model â†’ ships frozen model â†’ you use it â†’ wait for next release
 ```
 
-Adaptation today means prompting, RAG, or expensive fine-tuning — all of which
+Adaptation today means prompting, RAG, or expensive fine-tuning â€” all of which
 still depend on the lab for the next meaningful capability jump.
 
-AI Mind Reader suggests a different architecture:
+agent-open-mind suggests a different architecture:
 
 ```
 You deploy agents
-       ↓
+       â†“
 Agents reason on your real tasks (not benchmarks)
-       ↓
-AI Mind Reader captures the reasoning (continuous, automatic)
-       ↓
-Dispatcher accumulates patterns → improves next deployment
-       ↓
+       â†“
+agent-open-mind captures the reasoning (continuous, automatic)
+       â†“
+Dispatcher accumulates patterns â†’ improves next deployment
+       â†“
 High-quality labeled traces accumulate in your brain/
-       ↓
+       â†“
 Feed back to model training when ready (optional, at your pace)
 ```
 
 In this model:
-- **Improvement is continuous** — not gated on the next model release
-- **Improvement is local** — your tasks, your traces, your brain/
-- **Improvement is sovereign** — the data stays on your hardware
-- **The lab becomes optional** — for the adaptation loop, not the base model
+- **Improvement is continuous** â€” not gated on the next model release
+- **Improvement is local** â€” your tasks, your traces, your brain/
+- **Improvement is sovereign** â€” the data stays on your hardware
+- **The lab becomes optional** â€” for the adaptation loop, not the base model
 
 This is what "instance learning" looks like in practice:
 learning that happens at inference time, without touching weights,
@@ -167,7 +178,7 @@ The lab ships a frozen model. Your deployment improves continuously.
 
 Two rules govern trace capture. They are not optional.
 
-### Rule 1 — Full Accounting on Every Turn
+### Rule 1 â€” Full Accounting on Every Turn
 
 Every sub-agent spawned must be tracked. Before the dispatcher proceeds:
 
@@ -178,31 +189,31 @@ For every agent:
   - Result: accepted / tainted / pending?
 ```
 
-### Rule 2 — Absent Thoughts = Tainted Result
+### Rule 2 â€” Absent Thoughts = Tainted Result
 
 Zero reasoning traces = the result is discarded entirely.
 
 ```
 1. MARK result as TAINTED
-2. IGNORE result — do not use it
+2. IGNORE result â€” do not use it
 3. TRIGGER Human-in-the-Loop (HITL) review
 4. LOG the incident
-5. SPAWN a replacement agent — mandatory, not optional
+5. SPAWN a replacement agent â€” mandatory, not optional
 6. COMPARE replacement traces against the silent agent
-     → the delta is diagnostic evidence
+     â†’ the delta is diagnostic evidence
 7. HOLD replacement result until human approves
 8. NEVER proceed without explicit approval
 ```
 
 **The thought trace is the receipt. No receipt, no trust.**
 
-Absence of reasoning is a signal — not a benign edge case. The agent may have been prompt-injected, short-circuited, or corrupted.
+Absence of reasoning is a signal â€” not a benign edge case. The agent may have been prompt-injected, short-circuited, or corrupted.
 
 ---
 
 ## Quick Start
 
-### Ollama (recommended — self-hosted, sovereign)
+### Ollama (recommended â€” self-hosted, sovereign)
 
 ```bash
 # 1. Run a model that surfaces reasoning
@@ -226,7 +237,7 @@ python scripts/self_reflect.py inject --last-n 5
 
 ### Hermes via OpenRouter
 
-OpenRouter exposes an OpenAI-compatible API — use the OpenAI adapter
+OpenRouter exposes an OpenAI-compatible API â€” use the OpenAI adapter
 with a custom base URL:
 
 ```python
@@ -274,33 +285,33 @@ python scripts/extract_thoughts.py extract \
 
 | Platform | Reasoning Access | Status | Notes |
 |---|---|---|---|
-| **Ollama** | ✅ `<think>` tags | ✅ v0.2 | DeepSeek-R1, Qwen3, thinking-enabled Hermes |
-| **Antigravity** | ✅ `thinking` field | ✅ v0.1 | Native via `transcript.jsonl` |
-| **Claude API** | ✅ `type: thinking` blocks | ✅ v0.2 | Requires extended thinking enabled in API call |
-| **Gemini API** | ✅ `part.thought == True` | ✅ v0.2 | Gemini 2.5 Pro / Flash Thinking |
-| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only — content hidden by OpenAI policy |
-| **OpenAI GPT-4** | ⚠️ Prompt engineering | ✅ v0.2 | `CHAIN_OF_THOUGHT_SYSTEM_PROMPT` provided |
+| **Ollama** | âœ… `<think>` tags | âœ… v0.2 | DeepSeek-R1, Qwen3, thinking-enabled Hermes |
+| **Antigravity** | âœ… `thinking` field | âœ… v0.1 | Native via `transcript.jsonl` |
+| **Claude API** | âœ… `type: thinking` blocks | âœ… v0.2 | Requires extended thinking enabled in API call |
+| **Gemini API** | âœ… `part.thought == True` | âœ… v0.2 | Gemini 2.5 Pro / Flash Thinking |
+| **OpenAI o1/o3** | âŒ Hidden by policy | âš ï¸ Limited | Token count only â€” content hidden by OpenAI policy |
+| **OpenAI GPT-4** | âš ï¸ Prompt engineering | âœ… v0.2 | `CHAIN_OF_THOUGHT_SYSTEM_PROMPT` provided |
 
 > OpenAI is the only major platform that actively hides reasoning content from developers.
 > This is a policy decision, not a technical limitation. Their reasoning models automatically
-> trigger the tainted-result protocol — the integrity rules apply equally to all platforms.
+> trigger the tainted-result protocol â€” the integrity rules apply equally to all platforms.
 
 ---
 
 ## The Accumulation Model
 
-Over time, AI Mind Reader builds a library of reasoning traces:
+Over time, agent-open-mind builds a library of reasoning traces:
 
 ```
 brain/
   traces/
-    code-review-agent-001.json     ← how it reasoned about security
-    code-review-agent-002.json     ← different task, different approach
-    compliance-agent-001.json      ← how it reasoned about HIPAA
+    code-review-agent-001.json     â† how it reasoned about security
+    code-review-agent-002.json     â† different task, different approach
+    compliance-agent-001.json      â† how it reasoned about HIPAA
     tainted/
-      agent-003-zero-thoughts.json ← incident record, HITL triggered
+      agent-003-zero-thoughts.json â† incident record, HITL triggered
   patterns/
-    INDEX.md                       ← accumulated reasoning patterns
+    INDEX.md                       â† accumulated reasoning patterns
 ```
 
 The dispatcher accumulates what the agents cannot.  
@@ -308,13 +319,13 @@ The agents start fresh every time. The dispatcher does not.
 
 ---
 
-## Self-Reflection — The Dispatcher Reads Its Own Mind
+## Self-Reflection â€” The Dispatcher Reads Its Own Mind
 
 A mind reader who can only read *other* minds is a tool.  
 A mind reader who can also read *its own* mind is something different.
 
 The dispatcher's own reasoning traces are logged in exactly the same format
-as sub-agent traces — same transcript structure, same `thinking` field.
+as sub-agent traces â€” same transcript structure, same `thinking` field.
 
 **The only difference: the conversation ID is your own.**
 
@@ -332,12 +343,12 @@ Same tool. Same code. Pointed inward.
 
 ```
 Turn N:    Dispatcher reasons, acts, completes
-           → thinking logged to transcript.jsonl
+           â†’ thinking logged to transcript.jsonl
 
 Turn N+1:  Before acting, dispatcher reads its own last 5 steps
-           → "What did I just reason through?"
-           → Compact summary injected into context as working memory
-           → Dispatcher acts with awareness of its own recent reasoning
+           â†’ "What did I just reason through?"
+           â†’ Compact summary injected into context as working memory
+           â†’ Dispatcher acts with awareness of its own recent reasoning
 
 Turn N+2:  Acts with accumulated self-knowledge
 ```
@@ -360,7 +371,7 @@ python scripts/self_reflect.py inject --last-n 5
 # Read only new thoughts since last check (cursor-tracked)
 python scripts/self_reflect.py new
 
-# Watch in near-real-time — prints new thoughts as steps complete
+# Watch in near-real-time â€” prints new thoughts as steps complete
 python scripts/self_reflect.py watch --interval 2
 
 # Save to brain/self/ for accumulation
@@ -369,19 +380,19 @@ python scripts/self_reflect.py save \
   --output brain/self/working_memory.json
 ```
 
-**The limitation — and why it doesn't matter:**
+**The limitation â€” and why it doesn't matter:**
 
 You cannot read a thought while it is still being generated.
-The lag is one completed step. This is not a design flaw —
+The lag is one completed step. This is not a design flaw â€”
 it is how introspection works. You reflect on what you just thought,
 not the thought as it forms.
 
 **The complete loop:**
 
 ```
-AI Mind Reader reads sub-agents   ← external introspection
-AI Mind Reader reads itself        ← self introspection
-                    ↓
+agent-open-mind reads sub-agents   â† external introspection
+agent-open-mind reads itself        â† self introspection
+                    â†“
 Dispatcher knows:
   - How its agents reasoned (sub-agent traces)
   - How it itself reasoned (self traces)
@@ -395,13 +406,14 @@ This is a genuinely different kind of system.
 
 ## Connection to DispatcherAgents
 
-AI Mind Reader is the cognitive capture layer of the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
+`agent-open-mind` is the cognitive capture layer of the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
 
 ```
 DispatcherAgents
-├── ClawFilters       ← governs WHAT agents do (trust, permissions, audit)
-├── AI Mind Reader    ← captures HOW agents think  ← you are here
-└── brain/            ← accumulated knowledge and training signal library
+â”œâ”€â”€ TelsonBase        â† governs WHAT agents do (trust, permissions, audit)
+â”œâ”€â”€ agent-open-mind   â† captures HOW agents think  â† you are here
+â”œâ”€â”€ open-mind         â† agent reviews its OWN thinking vs its response
+â””â”€â”€ brain/            â† accumulated knowledge and training signal library
 ```
 
 ---
@@ -416,7 +428,7 @@ DispatcherAgents
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE)
+Apache 2.0 â€” see [LICENSE](LICENSE)
 
 ---
 
@@ -427,10 +439,10 @@ Apache 2.0 — see [LICENSE](LICENSE)
 
 **The discovery:** During a live development session, it was demonstrated that an AI model had no access to its own reasoning tokens. The reasoning trace was read from the system log and fed back to the model. The model confirmed it had never seen its own thoughts.
 
-AI Mind Reader is the direct implementation of that observation.
+agent-open-mind is the direct implementation of that observation.
 
-> *"I found out you didn't see your thoughts. It struck me — that was my ah-ha moment."*  
-> — Jeff Phillips, June 2026
+> *"I found out you didn't see your thoughts. It struck me â€” that was my ah-ha moment."*  
+> â€” Jeff Phillips, June 2026
 
 ---
 
