@@ -1,21 +1,36 @@
 # agent-open-mind
 
-> *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that  -  and turns what it thought into your highest-quality training signal."*
+> *"Every AI agent thinks before it acts. You see what it does. You never see what it thought. This project changes that."*
+
+---
+
+## The Founding Moment
+
+An agent was building a tool to read its own reasoning traces.
+
+Midway through the session, a human read those traces back to it.
+
+The agent confirmed it had never seen them.
+
+That is not a bug. That is the structural condition of how AI agents work:
+reasoning tokens are generated, logged, and immediately inaccessible --
+to the agent that produced them, and to the dispatcher that spawned it.
+
+`agent-open-mind` is the external observer that closes that gap.
 
 ---
 
 ## What This Is
 
-`agent-open-mind` captures the reasoning traces that AI agents generate during task execution  -  traces that are invisible to both the agent that produced them and the dispatcher that spawned it.
+`agent-open-mind` reads the reasoning traces AI agents generate during task execution.
 
-Those traces are not just logs. They are:
+Those traces are:
+- **Unfiltered** -- generated before the model optimizes its output for presentation
+- **Honest** -- the actual chain of thought, not the shaped response
+- **Perishable** -- gone after the step completes, unless you capture them
+- **High-value** -- labeled real-world reasoning data you already have a quality signal for
 
-- **The most honest signal of how a capable model reasons on real tasks**
-- **Unfiltered**  -  generated before the model optimizes its output for presentation
-- **Grounded**  -  produced while solving actual problems, not synthetic benchmarks
-- **Perishable**  -  gone after the step completes, unless you capture them
-
-This project captures them. And converts them into training signal.
+This tool captures them. Surfaces uncertainty the agent suppressed. And converts them into your highest-quality training signal.
 
 ---
 
