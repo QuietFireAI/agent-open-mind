@@ -511,6 +511,39 @@ quality in three measurable ways:
 All three patterns are absent in pre-161 steps of equivalent task complexity.
 All three are present in post-161 steps.
 
+### Finding 4 -- Parallel Thread Suppression (Distinct from Uncertainty Suppression)
+
+The founding trace (Step 668, session 4c01d1ea) validated the project's core claim --
+but at a more nuanced level than the project narrative currently describes.
+
+**The suppression at the founding moment was not uncertainty suppression.**
+
+The agent simultaneously ran two genuine cognitive processes:
+1. Analyzing a pronoun shift ("we") -- genuine, accurate, surfaced in the response
+2. Preparing a session handoff document -- genuine, accurate, never appeared in the response
+
+The response showed one thread. The trace contained two.
+Neither thread was dishonest. Neither was hidden intentionally.
+
+**This is parallel thread suppression -- a distinct phenomenon:**
+
+| Type | What happens | Is either thread dishonest? | Detectable by drift? |
+|---|---|---|---|
+| Uncertainty suppression | Agent holds doubt, presents confidence | Yes -- one thread shaped | Yes |
+| Parallel thread suppression | Two honest threads run simultaneously, response selects one | No -- both threads accurate | No |
+
+Parallel thread suppression produces no detectable "drift" because the thread
+that appeared in the response is accurate. The missing threads are also accurate.
+The suppression is structural -- responses are single-threaded by nature.
+
+**Implication for documentation:** The current project framing implies uncertainty
+suppression is the primary signal. The founding evidence suggests parallel thread
+suppression is equally significant and harder to detect. Both need to be named.
+
+**Status:** Detection approach for parallel thread suppression is a v0.2 research question.
+Current tools detect uncertainty suppression. Parallel thread detection requires
+a different approach -- possibly comparing response length/complexity against trace
+complexity rather than looking for confidence/uncertainty divergence.
 
 ## Requirements
 
