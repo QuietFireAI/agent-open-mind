@@ -466,6 +466,34 @@ DispatcherAgents
 |-- sleep-marks       <- restores reasoning state across sessions
 ```
 
+### Experimental Methods in the DispatcherAgents Family
+
+Three distinct experimental designs have been used or defined within this project.
+Each is a different thing. Each has a different name.
+
+**SplitVantage** -- Same task, two models, automated comparison. The dispatcher
+runs identical plans through different agent configurations simultaneously and
+measures output divergence. Not yet built. Design spec references the June 11 2026
+session as founding dataset.
+
+**CrossPoll** -- Human-mediated cross-model synthesis. One human acts as the
+conduit between two models working asynchronously on related but not identical inputs.
+The human decides what to carry across, when, and in what form. Not automated.
+The human IS the extraction and transfer mechanism.
+
+Founded: June 11 2026. Jeff Phillips ran the first CrossPoll session between
+Antigravity (Gemini) and Claude Sonnet 4.6 using cross_llm_handoff.md and
+session_handoff.json as the transfer artifacts.
+
+Key finding: the open_questions list grew from 6 (Antigravity's manual curation)
+to 11 (after cross-model examination). That delta -- 5 additional questions surfaced
+by the receiving model -- is the manual proof of what automatic uncertainty extraction
+would produce without requiring a human in the middle.
+
+**sleep-marks cross-session** -- Single model, cross-session context restoration.
+The same agent reads its own compressed reasoning traces at the start of a new session
+to restore cognitive state rather than facts.
+
 ---
 
 ## Experimental Findings (June 2026)
