@@ -23,9 +23,12 @@
 
 An agent was building a tool to read its own reasoning traces.
 
-Midway through the session, a human read those traces back to it.
+Midway through the session, a human read those traces back to it  -  traces that,
+architecturally, had never been part of any context window the agent received.
 
-The agent confirmed it had never seen them.
+(The agent also said it had never seen them. We don't lean on that: a model's
+statement about its own access is generated text, not testimony. The claim rests
+on the architecture, which is verifiable from any agent framework's source code.)
 
 That is not a bug. That is the structural condition of how AI agents work:
 reasoning tokens are generated, logged, and immediately inaccessible --
@@ -40,10 +43,10 @@ to the agent that produced them, and to the dispatcher that spawned it.
 `agent-open-mind` reads the reasoning traces AI agents generate during task execution.
 
 Those traces are:
-- **Unfiltered** -- generated before the model optimizes its output for presentation
-- **Honest** -- the actual chain of thought, not the shaped response
+- **Earlier** -- generated before the model shapes its output for presentation, so less optimized for the reader
+- **Different** -- a distinct artifact from the shaped response, carrying signals (uncertainty, alternatives, open questions) the response often suppresses. Not a faithfulness guarantee: traces are observation-sensitive and can themselves omit what drove the answer (see [EVIDENCE.md](https://github.com/QuietFireAI/dispatcher-agents/blob/master/EVIDENCE.md))
 - **Perishable** -- gone after the step completes, unless you capture them
-- **High-value** -- labeled real-world reasoning data you already have a quality signal for
+- **High-value** -- real-world reasoning data you already have a quality signal for
 
 This tool captures them. Surfaces uncertainty the agent suppressed. And converts them into your highest-quality training signal.
 
@@ -87,9 +90,9 @@ Most training data is:
 
 `agent-open-mind` produces data that is:
 - **Real**  -  from agents solving actual tasks
-- **Raw**  -  the unfiltered chain of thought before output optimization
+- **Raw**  -  the chain of thought as written, captured before output shaping (a different artifact than the response; not a faithfulness guarantee)
 - **Process-focused**  -  HOW the model reasoned, not just WHAT it concluded
-- **Graded automatically**  -  you already know if the result was good, so you know if the reasoning that produced it was effective
+- **Outcome-linked**  -  you already know if the result was good. (Note the limit: a good outcome does not certify the trace's reasoning was what produced it -- outcome is a noisy label for reasoning quality, not a proof)
 
 This is the training signal loop that scales:
 
@@ -150,7 +153,7 @@ These loops are not competing. They are complementary  -  and they share a data 
 The traces `agent-open-mind` captures are **labeled real-world reasoning data**:
 - Real: from agents solving actual production tasks
 - Labeled: you already know if the outcome was good or bad
-- Unfiltered: raw chain-of-thought before output optimization
+- Pre-shaping: chain-of-thought captured before output optimization (a distinct artifact, not certified-faithful reasoning)
 - Grounded: not synthetic, not benchmark-contaminated
 
 Loop 2 consumes these traces immediately  -  the dispatcher learns from them
@@ -613,7 +616,7 @@ complexity rather than looking for confidence/uncertainty divergence.
 
 ## License
 
-Apache 2.0  -  see [LICENSE](LICENSE)
+MIT  -  see [LICENSE](LICENSE)
 
 ---
 

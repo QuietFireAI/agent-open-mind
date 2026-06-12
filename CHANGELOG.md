@@ -74,7 +74,7 @@ All notable changes to AI Mind Reader are documented here.
 - Generic JSONL adapter with configurable field names
 - `config.example.yaml` — platform configuration template
 - `examples/sample_thoughts.json` — reference output format
-- `LICENSE` — Apache 2.0, Jeff Phillips / Quietfire AI
+- `LICENSE` — MIT, Jeff Phillips / Quietfire AI
 - Integrity Protocol: Rule 1 (full accounting) + Rule 2 (absent thoughts = tainted)
 - README with concept, asymmetry, training signal value proposition
 
