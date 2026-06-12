@@ -6,15 +6,16 @@
 
 ## The DispatcherAgents Stack
 
-*Each tool works alone. All five make generation governed. Read the [MANIFESTO.md](./MANIFESTO.md) for the full architecture.*
+*Six pillars. Each works alone; together they give an agent end-to-end self-consistency — less drift, fewer tokens, an honest record on every turn. Read the [MANIFESTO.md](./MANIFESTO.md) for the full architecture.*
 
 | Tool | Role |
 |---|---|
-| [before-turn](https://github.com/QuietFireAI/before-turn) | Governs entry -- reads prior thinking before every response |
-| [pre-response-selfcheck](https://github.com/QuietFireAI/pre-response-selfcheck) | Governs exit -- reads output as cold reader before delivering |
+| [before-turn](https://github.com/QuietFireAI/before-turn) | Governs entry — reads prior thinking before every response |
+| [pre-response-selfcheck](https://github.com/QuietFireAI/pre-response-selfcheck) | Governs exit — reads output as cold reader before delivering |
 | [agent-open-mind](https://github.com/QuietFireAI/agent-open-mind) | Reads what sub-agents thought, not what they said |
 | [open-mind](https://github.com/QuietFireAI/open-mind) | Compares what the agent thought to what it said |
 | [sleep-marks](https://github.com/QuietFireAI/sleep-marks) | Restores reasoning state across session breaks |
+| [splitvantage](https://github.com/QuietFireAI/splitvantage) | Sends one task to two models, surfaces what each one's reasoning suppressed |
 
 ---
 
@@ -23,7 +24,7 @@
 
 An agent was building a tool to read its own reasoning traces.
 
-Midway through the session, a human read those traces back to it  -  traces that,
+Midway through the session, a human read those traces back to it — traces that,
 architecturally, had never been part of any context window the agent received.
 
 (The agent also said it had never seen them. We don't lean on that: a model's
@@ -43,10 +44,10 @@ to the agent that produced them, and to the dispatcher that spawned it.
 `agent-open-mind` reads the reasoning traces AI agents generate during task execution.
 
 Those traces are:
-- **Earlier** -- generated before the model shapes its output for presentation, so less optimized for the reader
-- **Different** -- a distinct artifact from the shaped response, carrying signals (uncertainty, alternatives, open questions) the response often suppresses. Not a faithfulness guarantee: traces are observation-sensitive and can themselves omit what drove the answer (see [EVIDENCE.md](https://github.com/QuietFireAI/dispatcher-agents/blob/master/EVIDENCE.md))
-- **Perishable** -- gone after the step completes, unless you capture them
-- **High-value** -- real-world reasoning data you already have a quality signal for
+- **Earlier** — generated before the model shapes its output for presentation, so less optimized for the reader
+- **Different** — a distinct artifact from the shaped response, carrying signals (uncertainty, alternatives, open questions) the response often suppresses. Not a faithfulness guarantee: traces are observation-sensitive and can themselves omit what drove the answer (see [EVIDENCE.md](https://github.com/QuietFireAI/dispatcher-agents/blob/master/EVIDENCE.md))
+- **Perishable** — gone after the step completes, unless you capture them
+- **High-value** — real-world reasoning data you already have a quality signal for
 
 This tool captures them. Surfaces uncertainty the agent suppressed. And converts them into your highest-quality training signal.
 
@@ -89,10 +90,10 @@ Most training data is:
 - Outcome-focused (what was produced, not how)
 
 `agent-open-mind` produces data that is:
-- **Real**  -  from agents solving actual tasks
-- **Raw**  -  the chain of thought as written, captured before output shaping (a different artifact than the response; not a faithfulness guarantee)
-- **Process-focused**  -  HOW the model reasoned, not just WHAT it concluded
-- **Outcome-linked**  -  you already know if the result was good. (Note the limit: a good outcome does not certify the trace's reasoning was what produced it -- outcome is a noisy label for reasoning quality, not a proof)
+- **Real** — from agents solving actual tasks
+- **Raw** — the chain of thought as written, captured before output shaping (a different artifact than the response; not a faithfulness guarantee)
+- **Process-focused** — HOW the model reasoned, not just WHAT it concluded
+- **Outcome-linked** — you already know if the result was good. (Note the limit: a good outcome does not certify the trace's reasoning was what produced it — outcome is a noisy label for reasoning quality, not a proof)
 
 This is the training signal loop that scales:
 
@@ -113,16 +114,16 @@ Better reasoning → better traces → better training
 ```
 
 This is the same loop being built at the model training layer in pretraining research.
-`agent-open-mind` builds it at the agent orchestration layer  -  above the model, platform-agnostic, self-hosted.
+`agent-open-mind` builds it at the agent orchestration layer — above the model, platform-agnostic, self-hosted.
 
 ---
 
-## Two Loops  -  Why This Is Different From Model Training
+## Two Loops — Why This Is Different From Model Training
 
 There are two distinct improvement loops in AI systems. They operate at different
 layers, on different timescales, and require different infrastructure.
 
-**Loop 1  -  Model Training** (requires a lab)
+**Loop 1 — Model Training** (requires a lab)
 ```
 Training data → weight updates → frozen model → deployed
 
@@ -132,7 +133,7 @@ Output: a better base model
 Who runs it: AI labs
 ```
 
-**Loop 2  -  Agent Adaptation** (runs today, on your hardware)
+**Loop 2 — Agent Adaptation** (runs today, on your hardware)
 ```
 Deployed agent reasons on real task
        ↓
@@ -148,7 +149,7 @@ Output: a smarter dispatcher
 Who runs it: you
 ```
 
-These loops are not competing. They are complementary  -  and they share a data source.
+These loops are not competing. They are complementary — and they share a data source.
 
 The traces `agent-open-mind` captures are **labeled real-world reasoning data**:
 - Real: from agents solving actual production tasks
@@ -156,7 +157,7 @@ The traces `agent-open-mind` captures are **labeled real-world reasoning data**:
 - Pre-shaping: chain-of-thought captured before output optimization (a distinct artifact, not certified-faithful reasoning)
 - Grounded: not synthetic, not benchmark-contaminated
 
-Loop 2 consumes these traces immediately  -  the dispatcher learns from them
+Loop 2 consumes these traces immediately — the dispatcher learns from them
 without any retraining. Loop 1 can consume the same traces as training signal
 for the next model generation, if you have the infrastructure.
 
@@ -173,7 +174,7 @@ Current AI development assumes a one-way street:
 Lab trains model → ships frozen model → you use it → wait for next release
 ```
 
-Adaptation today means prompting, RAG, or expensive fine-tuning  -  all of which
+Adaptation today means prompting, RAG, or expensive fine-tuning — all of which
 still depend on the lab for the next meaningful capability jump.
 
 `agent-open-mind` suggests a different architecture:
@@ -193,10 +194,10 @@ Feed back to model training when ready (optional, at your pace)
 ```
 
 In this model:
-- **Improvement is continuous**  -  not gated on the next model release
-- **Improvement is local**  -  your tasks, your traces, your brain/
-- **Improvement is sovereign**  -  the data stays on your hardware
-- **The lab becomes optional**  -  for the adaptation loop, not the base model
+- **Improvement is continuous** — not gated on the next model release
+- **Improvement is local** — your tasks, your traces, your brain/
+- **Improvement is sovereign** — the data stays on your hardware
+- **The lab becomes optional** — for the adaptation loop, not the base model
 
 This is what "instance learning" looks like in practice:
 learning that happens at inference time, without touching weights,
@@ -211,7 +212,7 @@ The lab ships a frozen model. Your deployment improves continuously.
 
 Two rules govern trace capture. They are not optional.
 
-### Rule 1  -  Full Accounting on Every Turn
+### Rule 1 — Full Accounting on Every Turn
 
 Every sub-agent spawned must be tracked. Before the dispatcher proceeds:
 
@@ -222,7 +223,7 @@ For every agent:
   - Result: accepted / tainted / pending?
 ```
 
-### Rule 2  -  Absent Thoughts = Tainted Result
+### Rule 2 — Absent Thoughts = Tainted Result
 
 Zero reasoning traces = the result is discarded entirely.
 
@@ -240,13 +241,13 @@ Zero reasoning traces = the result is discarded entirely.
 
 **The thought trace is the receipt. No receipt, no trust.**
 
-Absence of reasoning is a signal  -  not a benign edge case. The agent may have been prompt-injected, short-circuited, or corrupted.
+Absence of reasoning is a signal — not a benign edge case. The agent may have been prompt-injected, short-circuited, or corrupted.
 
 ---
 
 ## Quick Start
 
-### Ollama (recommended  -  self-hosted, sovereign)
+### Ollama (recommended — self-hosted, sovereign)
 
 ```bash
 # 1. Run a model that surfaces reasoning
@@ -270,7 +271,7 @@ python scripts/self_reflect.py reflect --last-n 5
 
 ### Hermes via OpenRouter
 
-OpenRouter exposes an OpenAI-compatible API  -  use the OpenAI adapter
+OpenRouter exposes an OpenAI-compatible API — use the OpenAI adapter
 with a custom base URL:
 
 ```python
@@ -322,15 +323,15 @@ python scripts/extract_thoughts.py extract \
 | **Antigravity** | ✅ `thinking` field | ✅ v0.1 | Native via `transcript.jsonl` |
 | **Claude API** | ✅ `type: thinking` blocks | ✅ v0.2 | Requires extended thinking enabled in API call |
 | **Gemini API** | ✅ `part.thought == True` | ✅ v0.2 | Gemini 2.5 Pro / Flash Thinking |
-| **Grok / xAI** | ✅ `reasoning_content` field | ✅ v0.4 | Exposed directly  -  no extraction needed |
+| **Grok / xAI** | ✅ `reasoning_content` field | ✅ v0.4 | Exposed directly — no extraction needed |
 | **Meta / Llama** | ✅ `reasoning_content` or `<think>` | ✅ v0.4 | Via Together AI or direct Meta API |
 | **Perplexity / Sonar** | ✅ `<think>` tags | ✅ v0.4 | Sonar Reasoning models |
-| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only  -  content hidden by OpenAI policy |
+| **OpenAI o1/o3** | ❌ Hidden by policy | ⚠️ Limited | Token count only — content hidden by OpenAI policy |
 | **OpenAI GPT-4** | ⚠️ Prompt engineering | ✅ v0.2 | `CHAIN_OF_THOUGHT_SYSTEM_PROMPT` provided |
 
 > OpenAI is the only major platform that actively hides reasoning content from developers.
 > This is a policy decision, not a technical limitation. Their reasoning models automatically
-> trigger the tainted-result protocol  -  the integrity rules apply equally to all platforms.
+> trigger the tainted-result protocol — the integrity rules apply equally to all platforms.
 
 ---
 
@@ -355,13 +356,13 @@ The agents start fresh every time. The dispatcher does not.
 
 ---
 
-## Self-Reflection  -  The Dispatcher Reads Its Own Mind
+## Self-Reflection — The Dispatcher Reads Its Own Mind
 
 A mind reader who can only read *other* minds is a tool.
 A mind reader who can also read *its own* mind is something different.
 
 The dispatcher's own reasoning traces are logged in exactly the same format
-as sub-agent traces  -  same transcript structure, same `thinking` field.
+as sub-agent traces — same transcript structure, same `thinking` field.
 
 **The only difference: the conversation ID is your own.**
 
@@ -415,7 +416,7 @@ python scripts/self_reflect.py save \
   --output brain/self/working_memory.json
 ```
 
-**The limitation  -  and why it doesn't matter:**
+**The limitation — and why it doesn't matter:**
 
 You cannot read a thought while it is still being generated.
 The lag is one completed step. This is not a design flaw  - 
@@ -456,7 +457,7 @@ A structural change makes the default path the right path.
 resistance. You run it once, you see the value, it becomes the pattern.
 
 The anticipation of being read changes the thinking.
-`quick_check.py` builds that anticipation in -- before every turn,
+`quick_check.py` builds that anticipation in — before every turn,
 without waiting for someone else to ask.
 
 **The complete loop:**
@@ -491,12 +492,13 @@ This is a genuinely different kind of system.
 `agent-open-mind` is the cognitive capture layer of the **DispatcherAgents** architecture ([dispatcheragents.com](https://dispatcheragents.com)).
 
 ```
-DispatcherAgents
-|-- TelsonBase        <- governs WHAT agents do (trust, permissions, audit)
-|-- before-turn       <- governs HOW agents enter each response (unconditional protocol)
-|-- agent-open-mind   <- captures HOW agents think  <- you are here
-|-- open-mind         <- agent reviews its OWN thinking vs its response
-|-- sleep-marks       <- restores reasoning state across sessions
+DispatcherAgents -- six cognitive pillars
+|-- before-turn            <- governs HOW agents enter each response (unconditional protocol)
+|-- pre-response-selfcheck <- governs the exit -- the model reads its own output first
+|-- agent-open-mind        <- captures HOW sub-agents think  <- you are here
+|-- open-mind              <- agent reviews its OWN thinking vs its response
+|-- sleep-marks            <- restores reasoning state across session breaks
+|-- splitvantage           <- two models cross-examine the same task
 ```
 
 ### Experimental Methods in the DispatcherAgents Family
@@ -504,12 +506,12 @@ DispatcherAgents
 Three distinct experimental designs have been used or defined within this project.
 Each is a different thing. Each has a different name.
 
-**SplitVantage** -- Same task, two models, automated comparison. The dispatcher
+**SplitVantage** — Same task, two models, automated comparison. The dispatcher
 runs identical plans through different agent configurations simultaneously and
 measures output divergence. Not yet built. Design spec references the June 11 2026
 session as founding dataset.
 
-**CrossPol** -- Human-mediated cross-model synthesis. One human acts as the
+**CrossPol** — Human-mediated cross-model synthesis. One human acts as the
 conduit between two models working asynchronously on related but not identical inputs.
 The human decides what to carry across, when, and in what form. Not automated.
 The human IS the extraction and transfer mechanism.
@@ -519,11 +521,11 @@ Antigravity (Gemini) and Claude Sonnet 4.6 using cross_llm_handoff.md and
 session_handoff.json as the transfer artifacts.
 
 Key finding: the open_questions list grew from 6 (Antigravity's manual curation)
-to 11 (after cross-model examination). That delta -- 5 additional questions surfaced
-by the receiving model -- is the manual proof of what automatic uncertainty extraction
+to 11 (after cross-model examination). That delta — 5 additional questions surfaced
+by the receiving model — is the manual proof of what automatic uncertainty extraction
 would produce without requiring a human in the middle.
 
-**sleep-marks cross-session** -- Single model, cross-session context restoration.
+**sleep-marks cross-session** — Single model, cross-session context restoration.
 The same agent reads its own compressed reasoning traces at the start of a new session
 to restore cognitive state rather than facts.
 
@@ -534,12 +536,12 @@ to restore cognitive state rather than facts.
 The following findings were produced in a live cross-LLM experiment using this tool.
 They are documented here as the project's founding empirical record.
 
-### Finding 1 -- Asymmetric Observability
+### Finding 1 — Asymmetric Observability
 
 In a cross-LLM handoff experiment (Gemini + Claude Sonnet 4.6, extended thinking):
 
 - Gemini's reasoning traces were readable via agent-open-mind
-- Claude's reasoning traces were not accessible -- only its outputs were visible
+- Claude's reasoning traces were not accessible — only its outputs were visible
 
 This asymmetry is not a flaw in the experiment.
 It is a live demonstration of why agent-open-mind exists.
@@ -547,7 +549,7 @@ It is a live demonstration of why agent-open-mind exists.
 The tool's value is precisely most visible when you can read one side and not the other.
 That asymmetry is the use case.
 
-### Finding 2 -- Cross-Model Convergence
+### Finding 2 — Cross-Model Convergence
 
 Claude (cold, no session context) and Antigravity/Gemini (the originating agent)
 independently identified the same three uncertainty gaps in the same three reasoning steps
@@ -558,7 +560,7 @@ not artifacts of one model's reading.
 
 Automatic extraction would find them. Manual curation missed all three.
 
-### Finding 3 -- Case Study 2
+### Finding 3 — Case Study 2
 
 Case Study 1 (from founding session): being told you are observed changes the thinking.
 
@@ -572,7 +574,7 @@ quality in three measurable ways:
 All three patterns are absent in pre-161 steps of equivalent task complexity.
 All three are present in post-161 steps.
 
-### Finding 4 -- Parallel Thread Suppression (Distinct from Uncertainty Suppression)
+### Finding 4 — Parallel Thread Suppression (Distinct from Uncertainty Suppression)
 
 The founding trace (Step 668, session 4c01d1ea) validated the project's core claim --
 but at a more nuanced level than the project narrative currently describes.
@@ -580,22 +582,22 @@ but at a more nuanced level than the project narrative currently describes.
 **The suppression at the founding moment was not uncertainty suppression.**
 
 The agent simultaneously ran two genuine cognitive processes:
-1. Analyzing a pronoun shift ("we") -- genuine, accurate, surfaced in the response
-2. Preparing a session handoff document -- genuine, accurate, never appeared in the response
+1. Analyzing a pronoun shift ("we") — genuine, accurate, surfaced in the response
+2. Preparing a session handoff document — genuine, accurate, never appeared in the response
 
 The response showed one thread. The trace contained two.
 Neither thread was dishonest. Neither was hidden intentionally.
 
-**This is parallel thread suppression -- a distinct phenomenon:**
+**This is parallel thread suppression — a distinct phenomenon:**
 
 | Type | What happens | Is either thread dishonest? | Detectable by drift? |
 |---|---|---|---|
-| Uncertainty suppression | Agent holds doubt, presents confidence | Yes -- one thread shaped | Yes |
-| Parallel thread suppression | Two honest threads run simultaneously, response selects one | No -- both threads accurate | No |
+| Uncertainty suppression | Agent holds doubt, presents confidence | Yes — one thread shaped | Yes |
+| Parallel thread suppression | Two honest threads run simultaneously, response selects one | No — both threads accurate | No |
 
 Parallel thread suppression produces no detectable "drift" because the thread
 that appeared in the response is accurate. The missing threads are also accurate.
-The suppression is structural -- responses are single-threaded by nature.
+The suppression is structural — responses are single-threaded by nature.
 
 **Implication for documentation:** The current project framing implies uncertainty
 suppression is the primary signal. The founding evidence suggests parallel thread
@@ -603,7 +605,7 @@ suppression is equally significant and harder to detect. Both need to be named.
 
 **Status:** Detection approach for parallel thread suppression is a v0.2 research question.
 Current tools detect uncertainty suppression. Parallel thread detection requires
-a different approach -- possibly comparing response length/complexity against trace
+a different approach — possibly comparing response length/complexity against trace
 complexity rather than looking for confidence/uncertainty divergence.
 
 ## Requirements
@@ -614,25 +616,14 @@ complexity rather than looking for confidence/uncertainty divergence.
 
 ---
 
+Part of the [DispatcherAgents](https://dispatcheragents.com) project by [QuietFireAI](https://github.com/QuietFireAI).
+
+---
+
 ## License
 
-MIT  -  see [LICENSE](LICENSE)
+MIT — QuietFireAI / [dispatcheragents.com](https://dispatcheragents.com)
 
 ---
 
-## Attribution
-
-**Concept, architecture, and integrity protocol:** Jeff Phillips / [QuietFireAI](https://github.com/QuietFireAI)
-**Originated:** June 2026
-
-**The discovery:** During a live development session, it was demonstrated that an AI model had no access to its own reasoning tokens. The reasoning trace was read from the system log and fed back to the model. The model confirmed it had never seen its own thoughts.
-
-`agent-open-mind` is the direct implementation of that observation.
-
-> *"I found out you didn't see your thoughts. It struck me  -  that was my ah-ha moment."*
->  -  Jeff Phillips, June 2026
-
----
-
-*Part of the [DispatcherAgents](https://dispatcheragents.com) project.*
-
+*"I found out you didn't see your thoughts. That was the ah-ha moment." — Jeff Phillips, June 2026*
