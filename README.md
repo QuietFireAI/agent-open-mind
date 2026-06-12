@@ -506,12 +506,12 @@ runs identical plans through different agent configurations simultaneously and
 measures output divergence. Not yet built. Design spec references the June 11 2026
 session as founding dataset.
 
-**CrossPoll** -- Human-mediated cross-model synthesis. One human acts as the
+**CrossPol** -- Human-mediated cross-model synthesis. One human acts as the
 conduit between two models working asynchronously on related but not identical inputs.
 The human decides what to carry across, when, and in what form. Not automated.
 The human IS the extraction and transfer mechanism.
 
-Founded: June 11 2026. Jeff Phillips ran the first CrossPoll session between
+Founded: June 11 2026. Jeff Phillips ran the first CrossPol session between
 Antigravity (Gemini) and Claude Sonnet 4.6 using cross_llm_handoff.md and
 session_handoff.json as the transfer artifacts.
 
@@ -632,3 +632,4 @@ Apache 2.0  -  see [LICENSE](LICENSE)
 ---
 
 *Part of the [DispatcherAgents](https://dispatcheragents.com) project.*
+
