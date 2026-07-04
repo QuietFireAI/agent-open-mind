@@ -627,3 +627,7 @@ MIT - QuietFireAI / [QuietFireAI](https://github.com/QuietFireAI)
 ---
 
 *"I found out you didn't see your thoughts. That was the ah-ha moment." - Jeff Phillips, June 2026*
+
+## Runtime wiring
+
+Runtime wiring (dispatcher-agents): Hub.ingest_spoke_trace calls agent_open_mind.taint_check on every spoke trace at ingestion - the pillar function IS the gate (absent thought = tainted, held for review, never silently admitted). Import: from agent_open_mind import taint_check.

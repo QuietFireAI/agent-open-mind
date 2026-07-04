@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-open-mind"
+version = "0.2.0"
+description = "Hub-central monitoring of sub-agent thinking traces. Absent thoughts = tainted result."
+requires-python = ">=3.9"
+
+[tool.setuptools]
+packages = ["agent_open_mind"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
