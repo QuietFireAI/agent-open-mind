@@ -1,19 +1,19 @@
 """
-AI Mind Reader — Perplexity Adapter
+AI Mind Reader - Perplexity Adapter
 
 Reads reasoning traces from Perplexity's Sonar Reasoning models.
 
 Perplexity's reasoning models embed thinking inside <think>...</think>
-tags in the response content — the same pattern as Ollama/DeepSeek-R1.
+tags in the response content - the same pattern as Ollama/DeepSeek-R1.
 The tags are stripped from the final content; thinking is returned
 separately.
 
 Supported thinking models:
-  - sonar-reasoning
-  - sonar-reasoning-pro
+ - sonar-reasoning
+ - sonar-reasoning-pro
 
 Non-reasoning models (sonar, sonar-pro) return no thinking and are
-flagged as tainted — use the above for thought capture.
+flagged as tainted - use the above for thought capture.
 
 API:  https://api.perplexity.ai/chat/completions  (OpenAI-compatible)
 Auth: PERPLEXITY_API_KEY environment variable
@@ -58,7 +58,7 @@ class PerplexityAdapter:
         Parse a Perplexity API response into a standardized thought result.
 
         Args:
-            raw: Perplexity API response — OpenAI SDK object or plain dict.
+            raw: Perplexity API response - OpenAI SDK object or plain dict.
 
         Returns:
             dict with keys:

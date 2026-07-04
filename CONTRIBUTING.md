@@ -1,6 +1,6 @@
 # Contributing to AI Mind Reader
 
-First — thank you. This project exists because one person noticed something
+First - thank you. This project exists because one person noticed something
 nobody else had written down. If you're here, you've probably noticed something
 too. That's exactly the right reason to contribute.
 
@@ -12,7 +12,7 @@ AI Mind Reader captures the reasoning traces AI agents generate but cannot
 access themselves. The goal is a small, focused, dependency-free library that
 works across every platform that exposes reasoning content.
 
-**The guiding principle:** Every line of code should serve the core loop —
+**The guiding principle:** Every line of code should serve the core loop - 
 capture reasoning, enforce integrity, accumulate knowledge.
 
 ---
@@ -23,7 +23,7 @@ capture reasoning, enforce integrity, accumulate knowledge.
 git clone https://github.com/QuietfireAI/ai-mind-reader.git
 cd ai-mind-reader
 
-# No setup required — core is stdlib only
+# No setup required - core is stdlib only
 python -c "from adapters import get_adapter; print('Ready')"
 
 # Run the unit tests (no API keys needed)
@@ -74,14 +74,14 @@ class MyPlatformAdapter:
 ### Integrity Rule for Adapters
 
 If `has_thinking()` returns False, the result is tainted under the integrity
-protocol. Your adapter must never paper over absent thinking — if the platform
+protocol. Your adapter must never paper over absent thinking - if the platform
 didn't return reasoning content, the adapter must surface that honestly.
 
 ### Adapter Template
 
 ```python
 """
-AI Mind Reader — [Platform] Adapter
+AI Mind Reader - [Platform] Adapter
 
 [Explain how this platform exposes reasoning content]
 [Note any requirements: API version, model names, flags to enable thinking]
@@ -152,7 +152,7 @@ ADAPTERS = {
 
 Add a `validate_myplatform()` function in `tests/validate_adapters.py`
 following the pattern of existing validators. The same prompt goes to every
-platform — this is intentional for fair comparison.
+platform - this is intentional for fair comparison.
 
 ### Add Unit Tests
 
@@ -196,13 +196,13 @@ can't write the adapter yourself, the research helps.
 
 ## Code Style
 
-- **Python 3.9+** — no walrus operator in public APIs, no 3.10+ match statements
-- **No required dependencies** — stdlib only for core. Platform packages are
+- **Python 3.9+** - no walrus operator in public APIs, no 3.10+ match statements
+- **No required dependencies** - stdlib only for core. Platform packages are
   optional and must be imported lazily inside the function that needs them
-- **Honest documentation** — if a platform hides reasoning content (like OpenAI
+- **Honest documentation** - if a platform hides reasoning content (like OpenAI
   o1/o3), document that clearly. Don't hide limitations.
 - **Type hints** on all public methods
-- **Docstrings** on all classes and public methods — explain the platform's
+- **Docstrings** on all classes and public methods - explain the platform's
   reasoning format, not just what the function does
 
 ---
@@ -214,7 +214,7 @@ can't write the adapter yourself, the research helps.
 3. Add unit tests that pass without API keys
 4. Run live validation if you have API access: `python tests/validate_adapters.py --platform myplatform`
 5. Update `CHANGELOG.md` under a new `[Unreleased]` section
-6. Open a PR — the template will guide you through what to include
+6. Open a PR - the template will guide you through what to include
 
 PRs that add adapters without unit tests will be asked to add them before merge.
 PRs that hide platform limitations will be asked to document them honestly.
@@ -224,8 +224,8 @@ PRs that hide platform limitations will be asked to document them honestly.
 ## The Integrity Protocol Is Non-Negotiable
 
 The two integrity rules in the README are not suggestions. Any contribution
-that weakens them — by silently dropping absent traces, by ignoring taint flags,
-by proceeding without HITL when required — will not be merged.
+that weakens them - by silently dropping absent traces, by ignoring taint flags,
+by proceeding without HITL when required - will not be merged.
 
 *The reasoning trace is the receipt. No receipt, no trust.*
 

@@ -1,29 +1,29 @@
 """
-AI Mind Reader — Meta Llama Adapter
+AI Mind Reader - Meta Llama Adapter
 
 Reads reasoning traces from Meta's Llama thinking models.
 
 Meta's Llama API is OpenAI-compatible. Llama 4 reasoning models may
 expose thinking via:
-  - <think>...</think> tags in content (most common via inference providers)
-  - reasoning_content field (if Meta adopts xAI's pattern)
+ - <think>...</think> tags in content (most common via inference providers)
+ - reasoning_content field (if Meta adopts xAI's pattern)
 
 This adapter handles both formats, falling back gracefully. Validate
-against the actual API before production use — the exact format for
+against the actual API before production use - the exact format for
 Meta's official Llama API (api.llama.com) should be confirmed as the
 API matures.
 
 Supported thinking models (as of June 2026):
-  - Llama-4-Scout-17B-16E-Instruct-FP8   (via Together, Fireworks, Groq)
-  - Llama-4-Maverick-17B-128E-Instruct   (via inference providers)
-  - meta-llama/Llama-4-Scout-*           (via Together AI)
+ - Llama-4-Scout-17B-16E-Instruct-FP8   (via Together, Fireworks, Groq)
+ - Llama-4-Maverick-17B-128E-Instruct   (via inference providers)
+ - meta-llama/Llama-4-Scout-*           (via Together AI)
 
 API (Meta official): https://api.llama.com/v1  (OpenAI-compatible)
 API (Together AI):   https://api.together.xyz/v1
 Auth: LLAMA_API_KEY or TOGETHER_API_KEY environment variable
 
 NOTE: If running Llama locally via Ollama, use the Ollama adapter instead
-— it handles <think> tags identically and does not require API keys.
+ -  it handles <think> tags identically and does not require API keys.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ class MetaAdapter:
         Parse a Meta Llama API response into a standardized thought result.
 
         Args:
-            raw: Llama API response — OpenAI SDK object or plain dict.
+            raw: Llama API response - OpenAI SDK object or plain dict.
 
         Returns:
             dict with keys:
@@ -125,7 +125,7 @@ class MetaAdapter:
         if is_thinking_model:
             return cls._tainted(
                 f"Model '{model}' appears to support reasoning but returned "
-                "no thinking traces. Confirm API format at api.llama.com — "
+                "no thinking traces. Confirm API format at api.llama.com - "
                 "the thinking field name may differ. VALIDATION REQUIRED."
             )
 

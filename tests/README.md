@@ -41,7 +41,7 @@ $env:OPENAI_API_KEY    = "sk-..."
 ## Run validation
 
 ```bash
-# One platform at a time (recommended — confirm each before the next)
+# One platform at a time (recommended - confirm each before the next)
 python tests/validate_adapters.py --platform ollama
 python tests/validate_adapters.py --platform claude
 python tests/validate_adapters.py --platform gemini
@@ -63,10 +63,10 @@ python tests/validate_adapters.py --platform all
 | **Ollama** | ✅ PASS | `<think>` tags captured, thinking non-empty |
 | **Claude** | ✅ PASS | `type: thinking` blocks extracted |
 | **Gemini** | ✅ PASS | `part.thought==True` content extracted |
-| **OpenAI o3-mini** | ✅ PASS | Correctly tainted — reasoning token count captured, content hidden by policy |
+| **OpenAI o3-mini** | ✅ PASS | Correctly tainted - reasoning token count captured, content hidden by policy |
 | **OpenAI GPT-4o** | ✅ PASS | `<think>` tags from structured prompting captured |
 
-OpenAI reasoning models always show as "tainted" by design — the adapter
+OpenAI reasoning models always show as "tainted" by design - the adapter
 correctly flags them because the reasoning content is hidden. That is a
 passing result under the integrity protocol.
 

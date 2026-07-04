@@ -1,16 +1,16 @@
 """
-AI Mind Reader — Grok Adapter (xAI)
+AI Mind Reader - Grok Adapter (xAI)
 
 Reads reasoning traces from xAI's Grok thinking models.
 
 Grok (unlike OpenAI's o1/o3) exposes reasoning content directly via the
-`reasoning_content` field — similar to Claude's thinking blocks. The
+`reasoning_content` field - similar to Claude's thinking blocks. The
 thinking is NOT hidden. This makes Grok one of the most transparent
 platforms for thought trace capture.
 
 Supported thinking models:
-  - grok-3-mini        (reasoning_effort: "low" | "medium" | "high")
-  - grok-3-mini-fast   (reasoning_effort: "low" | "medium" | "high")
+ - grok-3-mini        (reasoning_effort: "low" | "medium" | "high")
+ - grok-3-mini-fast   (reasoning_effort: "low" | "medium" | "high")
 
 API:  https://api.x.ai/v1/chat/completions  (OpenAI-compatible)
 Auth: X_AI_API_KEY environment variable
@@ -38,7 +38,7 @@ class GrokAdapter:
     """
     Adapter for xAI Grok thinking models.
 
-    Grok exposes reasoning_content directly — no token counting, no
+    Grok exposes reasoning_content directly - no token counting, no
     artificial taint. If reasoning_content is empty the model either
     doesn't support thinking or reasoning_effort was not set.
     """
@@ -54,7 +54,7 @@ class GrokAdapter:
         Parse a Grok API response into a standardized thought result.
 
         Args:
-            raw: xAI API response — OpenAI SDK object or plain dict.
+            raw: xAI API response - OpenAI SDK object or plain dict.
 
         Returns:
             dict with keys:

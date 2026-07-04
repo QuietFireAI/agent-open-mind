@@ -1,5 +1,5 @@
 """
-AI Mind Reader — Gemini API Adapter (Google)
+AI Mind Reader - Gemini API Adapter (Google)
 
 Gemini 2.5 Pro and Flash Thinking return thought parts in the response
 where `part.thought == True`. These parts contain the model's reasoning
@@ -8,11 +8,11 @@ before it produces the visible output.
 Thinking is enabled automatically for Gemini 2.5 Pro.
 For other models, use: GenerationConfig(thinking_config=ThinkingConfig(...))
 
-Usage — parse a Gemini SDK response:
+Usage - parse a Gemini SDK response:
     from adapters.gemini_api import GeminiAdapter
     thinking, content = GeminiAdapter.from_api_response(response)
 
-Usage — read a JSONL log of logged Gemini responses:
+Usage - read a JSONL log of logged Gemini responses:
     traces = GeminiAdapter.read_log("path/to/gemini_log.jsonl")
 """
 
@@ -79,9 +79,9 @@ class GeminiAdapter:
         Extract thinking from a Gemini SDK response object.
 
         Compatible with responses from:
-          - google.generativeai (genai.GenerativeModel.generate_content)
-          - google.genai (genai.Client)
-          - vertexai.generative_models
+ - google.generativeai (genai.GenerativeModel.generate_content)
+ - google.genai (genai.Client)
+ - vertexai.generative_models
 
         Args:
             response: Response from any Gemini SDK

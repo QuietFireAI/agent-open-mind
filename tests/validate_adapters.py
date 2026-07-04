@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python3
 """
-AI Mind Reader — Adapter Validation Suite
+AI Mind Reader - Adapter Validation Suite
 
 Tests each platform adapter against its live API to verify:
   1. The API call succeeds and returns a response
@@ -45,7 +45,7 @@ LOGS_DIR.mkdir(parents=True, exist_ok=True)
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# The validation prompt — same task sent to every model for fair comparison.
+# The validation prompt - same task sent to every model for fair comparison.
 # Simple enough to run fast, complex enough to trigger genuine reasoning.
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ Be specific about what is wrong and why.
 """
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Response logger — always log the raw response before any parsing
+# Response logger - always log the raw response before any parsing
 # ─────────────────────────────────────────────────────────────────────────────
 
 def log_response(platform: str, raw: dict):
@@ -283,7 +283,7 @@ def validate_gemini(model: str = "gemini-2.5-pro-preview-06-05") -> dict:
 def validate_openai(model_reasoning: str = "o3-mini",
                     model_gpt4: str = "gpt-4o") -> dict:
     """
-    Validate the OpenAI adapter — two sub-tests:
+    Validate the OpenAI adapter - two sub-tests:
       1. Reasoning model (o3-mini): confirms token count captured, tainted correctly flagged
       2. GPT-4o with structured prompting: confirms <think> tags parsed
     """
@@ -382,7 +382,7 @@ def generate_report(results: list[dict]) -> str:
     """Generate a markdown validation report."""
     now = datetime.now(timezone.utc).isoformat()
     lines = [
-        "# AI Mind Reader — Adapter Validation Report",
+        "# AI Mind Reader - Adapter Validation Report",
         "",
         f"**Generated:** {now}  ",
         f"**Validation prompt:** Python function bug review  ",
@@ -396,7 +396,7 @@ def generate_report(results: list[dict]) -> str:
         status = r.get("status", "UNKNOWN")
         icon = {"PASS": "✅", "FAIL": "❌", "WARN": "⚠️", "SKIP": "⏭️", "ERROR": "🔴"}.get(status, "❓")
 
-        lines.append(f"## {icon} {platform} — {status}")
+        lines.append(f"## {icon} {platform} - {status}")
         lines.append("")
 
         if status == "SKIP":
@@ -413,7 +413,7 @@ def generate_report(results: list[dict]) -> str:
                     continue
                 sub_status = sub.get("status", "UNKNOWN")
                 sub_icon = {"PASS": "✅", "FAIL": "❌", "WARN": "⚠️", "ERROR": "🔴"}.get(sub_status, "❓")
-                lines.append(f"### {sub_icon} {sub.get('model', key)} — {sub_status}")
+                lines.append(f"### {sub_icon} {sub.get('model', key)} - {sub_status}")
                 lines.append("")
                 if sub.get("note"):
                     lines.append(f"> {sub['note']}")
@@ -496,7 +496,7 @@ def main():
         else [args.platform]
     )
 
-    print(f"\nAI Mind Reader — Adapter Validation")
+    print(f"\nAI Mind Reader - Adapter Validation")
     print(f"{'=' * 50}")
     print(f"Platforms: {', '.join(platforms)}")
     print(f"Logs dir:  {LOGS_DIR}")

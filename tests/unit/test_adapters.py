@@ -1,6 +1,6 @@
 ﻿"""
 Unit tests for AI Mind Reader adapters.
-No API keys required — tests parse known inputs only.
+No API keys required - tests parse known inputs only.
 """
 import json
 import sys

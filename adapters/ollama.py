@@ -1,15 +1,15 @@
 """
-AI Mind Reader — Ollama Adapter
+AI Mind Reader - Ollama Adapter
 
 Ollama surfaces reasoning via <think>...</think> tags embedded in the
 response text. Models that support this: DeepSeek-R1, Qwen3, some Hermes
 builds, and any model configured to emit chain-of-thought tags.
 
-Usage — parse a single response string:
+Usage - parse a single response string:
     from adapters.ollama import OllamaAdapter
     thinking, content = OllamaAdapter.parse_response(raw_text)
 
-Usage — read a JSONL log of Ollama responses:
+Usage - read a JSONL log of Ollama responses:
     traces = OllamaAdapter.read_log("path/to/ollama_log.jsonl")
 """
 
@@ -46,8 +46,8 @@ class OllamaAdapter:
 
         Returns:
             (thinking, content)
-            thinking — concatenated text from all <think> blocks
-            content  — response text with <think> blocks removed
+            thinking - concatenated text from all <think> blocks
+            content - response text with <think> blocks removed
         """
         thoughts = _THINK_RE.findall(raw_text)
         thinking = "\n\n".join(t.strip() for t in thoughts)
@@ -104,7 +104,7 @@ class OllamaAdapter:
 
                 thinking, content = OllamaAdapter.parse_response(raw_text)
                 if not thinking:
-                    continue  # no <think> block — skip
+                    continue  # no <think> block - skip
 
                 traces.append({
                     "step_index": idx,

@@ -1,17 +1,17 @@
 ﻿#!/usr/bin/env python3
 """
-AI Mind Reader — Self Reflect
+AI Mind Reader - Self Reflect
 The dispatcher reads its own thoughts between turns.
 
 This closes the loop: AI Mind Reader can read sub-agent minds
 AND its own. The same tool. Pointed inward.
 
 Commands:
-  self_reflect.py read    --conversation-id <id> [--last-n 5]
+  self_reflect.py read --conversation-id <id> [--last-n 5]
   self_reflect.py reflect --conversation-id <id> [--last-n 5]
-  self_reflect.py new     --conversation-id <id>
-  self_reflect.py watch   --conversation-id <id> [--interval 2]
-  self_reflect.py save    --conversation-id <id> [--last-n 5] --output <file>
+  self_reflect.py new --conversation-id <id>
+  self_reflect.py watch --conversation-id <id> [--interval 2]
+  self_reflect.py save --conversation-id <id> [--last-n 5] --output <file>
 
 Configuration:
   MIND_READER_OWN_ID       Your dispatcher conversation ID (avoids passing every time)
@@ -51,7 +51,7 @@ def cmd_read(adapter: SelfAdapter, last_n: int):
         return
 
     print(f"\n{'=' * 60}")
-    print(f"Own Reasoning — Last {len(steps)} Thinking Steps")
+    print(f"Own Reasoning - Last {len(steps)} Thinking Steps")
     print(f"Conversation: {adapter.conversation_id}")
     print(f"{'=' * 60}\n")
 
@@ -76,7 +76,7 @@ def cmd_read(adapter: SelfAdapter, last_n: int):
 
 def cmd_reflect(adapter: SelfAdapter, last_n: int):
     """
-    Print the reflection block — ready to prepend to the next dispatcher context.
+    Print the reflection block - ready to prepend to the next dispatcher context.
     
     Pipe this into your dispatcher's next turn to give it working memory
     of its own recent reasoning.
@@ -114,7 +114,7 @@ def cmd_watch(adapter: SelfAdapter, interval: float):
     Prints new thinking steps as they're logged.
     
     The lag is: one completed dispatcher step + poll interval.
-    This is the minimum possible — you cannot read a thought
+    This is the minimum possible - you cannot read a thought
     while it is still being generated.
     """
     print(f"Self-watch active. Lag: ~{interval}s after each completed step.")
@@ -167,7 +167,7 @@ def cmd_save(adapter: SelfAdapter, last_n: int, output_path: str):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="AI Mind Reader — Self Reflect: the dispatcher reads its own thoughts",
+        description="AI Mind Reader - Self Reflect: the dispatcher reads its own thoughts",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 The same tool that reads sub-agent minds, pointed inward.
@@ -176,7 +176,7 @@ Between turns, the dispatcher can read its own recent reasoning
 and inject it as working memory into the next turn's context.
 
 The lag is one completed step. You cannot read a thought as it
-forms — only after the step completes. This is how human introspection
+forms - only after the step completes. This is how human introspection
 works too.
         """
     )

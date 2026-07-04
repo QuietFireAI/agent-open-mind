@@ -3,7 +3,7 @@
 ## Our Commitment
 
 This project is maintained by a single independent developer. The community
-around it — contributors, users, critics — is expected to engage with honesty
+around it - contributors, users, critics - is expected to engage with honesty
 and directness. That's the same standard applied to the code itself.
 
 We are committed to making participation in this project a harassment-free
@@ -13,9 +13,9 @@ gender identity, nationality, or background.
 ## Standards
 
 **Encouraged:**
-- Honest technical disagreement — if the code is wrong, say so specifically
-- Respectful challenge of design decisions — with reasoning, not dismissal
-- Sharing real-world results — good or bad, both are useful
+- Honest technical disagreement - if the code is wrong, say so specifically
+- Respectful challenge of design decisions - with reasoning, not dismissal
+- Sharing real-world results - good or bad, both are useful
 - Asking questions without assuming the answer is obvious
 
 **Not acceptable:**

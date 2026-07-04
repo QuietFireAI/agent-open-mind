@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-extract_thoughts.py — Dispatcher Thought Loop utility
+extract_thoughts.py - Dispatcher Thought Loop utility
 Extracts and analyzes sub-agent thinking traces from agent conversation logs.
 
 Supports configurable platforms via config.yaml or environment variables.
 
 Usage:
-  python extract_thoughts.py extract   --conversation-id <id> --output <file>
+  python extract_thoughts.py extract --conversation-id <id> --output <file>
   python extract_thoughts.py summarize --input <file> --output <file>
-  python extract_thoughts.py compare   --inputs <file> <file> --output <file>
-  python extract_thoughts.py audit     --registry <file>
+  python extract_thoughts.py compare --inputs <file> <file> --output <file>
+  python extract_thoughts.py audit --registry <file>
 
 Configuration (config.yaml or env vars):
   DISPATCHER_BRAIN_DIR     Path to brain directory (default: ./brain)
@@ -187,7 +187,7 @@ def summarize_thoughts(input_path: str, output_path: str):
         f"**Platform:** {data.get('platform', 'unknown')}  ",
         f"**Extracted:** {data['extracted_at']}  ",
         f"**Total thinking steps:** {data['thought_count']}  ",
-        f"**Status:** {'⚠️ TAINTED — zero thoughts, HITL required' if data.get('tainted') else '✅ Valid'}  ",
+        f"**Status:** {'⚠️ TAINTED - zero thoughts, HITL required' if data.get('tainted') else '✅ Valid'}  ",
         "",
         "---",
         "",
@@ -210,7 +210,7 @@ def summarize_thoughts(input_path: str, output_path: str):
         ]
 
     for i, t in enumerate(data["thoughts"], 1):
-        lines.append(f"## Step {t['step_index']} — Thought {i}")
+        lines.append(f"## Step {t['step_index']} - Thought {i}")
         if t.get("created_at"):
             lines.append(f"*{t['created_at']}*")
         lines.append("")
@@ -254,8 +254,8 @@ def compare_thoughts(input_paths: list, output_path: str):
     lines = [
         "# Thought Trace Comparison",
         "",
-        f"**Agent A:** `{a['conversation_id']}` — {a['thought_count']} thoughts {'⚠️ TAINTED' if a_tainted else '✅'}  ",
-        f"**Agent B:** `{b['conversation_id']}` — {b['thought_count']} thoughts {'⚠️ TAINTED' if b_tainted else '✅'}  ",
+        f"**Agent A:** `{a['conversation_id']}` - {a['thought_count']} thoughts {'⚠️ TAINTED' if a_tainted else '✅'}  ",
+        f"**Agent B:** `{b['conversation_id']}` - {b['thought_count']} thoughts {'⚠️ TAINTED' if b_tainted else '✅'}  ",
         "",
     ]
 
@@ -271,13 +271,13 @@ def compare_thoughts(input_paths: list, output_path: str):
             "",
         ]
 
-    lines += ["## Agent A — Reasoning Patterns", ""]
+    lines += ["## Agent A - Reasoning Patterns", ""]
     if a_tainted:
         lines.append("*No thinking traces. Result is TAINTED.*")
     else:
         for t in a["thoughts"]:
             lines.append(f"- **[Step {t['step_index']}]** {t['thinking'][:250]}")
-    lines += ["", "## Agent B — Reasoning Patterns", ""]
+    lines += ["", "## Agent B - Reasoning Patterns", ""]
     if b_tainted:
         lines.append("*No thinking traces. Result is TAINTED.*")
     else:
@@ -325,18 +325,18 @@ def audit_registry(registry_path: str):
         thoughts_path = entry.get("thoughts_path")
 
         if status not in ("completed", "running", "failed"):
-            issues.append(f"UNACCOUNTED: {cid} — status '{status}' is not recognized")
+            issues.append(f"UNACCOUNTED: {cid} - status '{status}' is not recognized")
 
         if status == "completed":
             if not thoughts_path:
-                issues.append(f"TAINTED: {cid} — completed but no thoughts_path recorded")
+                issues.append(f"TAINTED: {cid} - completed but no thoughts_path recorded")
             elif not Path(thoughts_path).exists():
-                issues.append(f"TAINTED: {cid} — thoughts file missing: {thoughts_path}")
+                issues.append(f"TAINTED: {cid} - thoughts file missing: {thoughts_path}")
             else:
                 with open(thoughts_path) as f:
                     data = json.load(f)
                 if data.get("tainted") or data.get("thought_count", 0) == 0:
-                    issues.append(f"TAINTED: {cid} — zero thoughts, HITL required")
+                    issues.append(f"TAINTED: {cid} - zero thoughts, HITL required")
 
     if issues:
         print(f"\n⚠️  Registry audit found {len(issues)} issue(s):\n")
@@ -345,7 +345,7 @@ def audit_registry(registry_path: str):
         print("\nDispatcher must resolve all issues before proceeding.")
         sys.exit(1)
     else:
-        print(f"✅ Registry audit clean — {len(registry)} agents accounted for.")
+        print(f"✅ Registry audit clean - {len(registry)} agents accounted for.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -354,7 +354,7 @@ def audit_registry(registry_path: str):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Dispatcher Thought Loop — extract and analyze sub-agent reasoning traces",
+        description="Dispatcher Thought Loop - extract and analyze sub-agent reasoning traces",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Environment variables:

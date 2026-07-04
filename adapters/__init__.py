@@ -1,16 +1,16 @@
 """
-AI Mind Reader — Adapter package
+AI Mind Reader - Adapter package
 Each adapter handles one platform's reasoning trace format.
 
 Supported platforms:
-  ollama       — Local models via Ollama (<think> tags)
-  claude        — Anthropic Claude (thinking content blocks)
-  gemini        — Google Gemini (part.thought field)
-  openai        — OpenAI o1/o3 (tainted — reasoning hidden by policy)
-  grok          — xAI Grok (reasoning_content field, exposed)
-  meta          — Meta Llama (reasoning_content or <think> tags)
-  perplexity    — Perplexity Sonar Reasoning (<think> tags)
-  self          — Dispatcher self-reflection (transcript.jsonl)
+  ollama - Local models via Ollama (<think> tags)
+  claude - Anthropic Claude (thinking content blocks)
+  gemini - Google Gemini (part.thought field)
+  openai - OpenAI o1/o3 (tainted - reasoning hidden by policy)
+  grok - xAI Grok (reasoning_content field, exposed)
+  meta - Meta Llama (reasoning_content or <think> tags)
+  perplexity - Perplexity Sonar Reasoning (<think> tags)
+  self - Dispatcher self-reflection (transcript.jsonl)
 """
 
 from .ollama import OllamaAdapter

@@ -1,5 +1,5 @@
 """
-AI Mind Reader — Claude API Adapter (Anthropic)
+AI Mind Reader - Claude API Adapter (Anthropic)
 
 Claude 3.7+ with extended thinking enabled returns content blocks where
 `type == "thinking"` contains the reasoning trace and `type == "text"`
@@ -15,11 +15,11 @@ Extended thinking must be explicitly enabled in the API call:
 Without extended thinking, Claude produces no thinking blocks.
 Zero thinking blocks = tainted result under AI Mind Reader integrity rules.
 
-Usage — parse an Anthropic SDK response:
+Usage - parse an Anthropic SDK response:
     from adapters.claude_api import ClaudeAdapter
     thinking, content = ClaudeAdapter.from_api_response(response)
 
-Usage — read a JSONL log of logged Claude responses:
+Usage - read a JSONL log of logged Claude responses:
     traces = ClaudeAdapter.read_log("path/to/claude_log.jsonl")
 """
 
@@ -50,8 +50,8 @@ class ClaudeAdapter:
 
         Returns:
             (thinking, content)
-            thinking — concatenated text from all type=="thinking" blocks
-            content  — concatenated text from all type=="text" blocks
+            thinking - concatenated text from all type=="thinking" blocks
+            content - concatenated text from all type=="text" blocks
         """
         thinking_parts = []
         content_parts = []
@@ -136,7 +136,7 @@ class ClaudeAdapter:
                 thinking, content = ClaudeAdapter.parse_content_blocks(content_blocks)
 
                 if not thinking:
-                    continue  # no thinking block — skip (but caller should flag as tainted)
+                    continue  # no thinking block - skip (but caller should flag as tainted)
 
                 traces.append({
                     "step_index": idx,

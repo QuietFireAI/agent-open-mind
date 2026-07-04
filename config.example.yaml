@@ -1,15 +1,15 @@
-# Dispatcher Thought Loop — Platform Configuration
+# Dispatcher Thought Loop - Platform Configuration
 # Copy this to config.yaml and adjust for your setup.
 
 # Path to the brain directory where agent logs and thought traces are stored.
 brain_dir: ./brain
 
 # Platform adapter. Options:
-#   antigravity   — Google DeepMind Antigravity system
-#   generic       — any JSONL log with configurable field names
+#   antigravity - Google DeepMind Antigravity system
+#   generic - any JSONL log with configurable field names
 platform: generic
 
-# Log schema — field names in your platform's JSONL log format.
+# Log schema - field names in your platform's JSONL log format.
 # These defaults work for Antigravity. Adjust for other platforms.
 log_schema:
   step_type_field: type              # field that identifies the step type

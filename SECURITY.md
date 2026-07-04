@@ -28,17 +28,17 @@ in the release notes unless you prefer to remain anonymous.
 
 Security issues relevant to this project include:
 
-- **Prompt injection via reasoning traces** — malicious content in a captured
+- **Prompt injection via reasoning traces** - malicious content in a captured
   thinking trace that could cause the dispatcher to act against user intent
-- **Path traversal in log file reading** — adapter `read_log()` paths that
+- **Path traversal in log file reading** - adapter `read_log()` paths that
   could access files outside the intended directory
-- **Credential exposure** — API keys or secrets appearing in logged responses
+- **Credential exposure** - API keys or secrets appearing in logged responses
   that are then written to non-gitignored files
-- **Integrity protocol bypass** — conditions where a tainted result could be
+- **Integrity protocol bypass** - conditions where a tainted result could be
   silently promoted past the HITL gate
 
 ## Out of Scope
 
 - Vulnerabilities in the underlying AI platforms (report those to the platform)
-- API key management (your responsibility — the `.gitignore` protects logs)
+- API key management (your responsibility - the `.gitignore` protects logs)
 - Model behavior (we capture reasoning, we don't control it)

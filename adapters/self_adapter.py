@@ -1,5 +1,5 @@
 ﻿"""
-AI Mind Reader — Self Adapter
+AI Mind Reader - Self Adapter
 
 The dispatcher reading its own thoughts.
 
@@ -10,10 +10,10 @@ in exactly the same format as sub-agent traces.
 The only difference: the conversation ID is your own.
 
 Key behaviors beyond the standard adapter:
-  - last_n:  read only the most recent N thinking steps (working memory window)
-  - cursor:  track which steps have been read to avoid re-reading old thoughts
-  - inject:  format output for direct context reflection into the next turn
-  - watch:   monitor transcript for new thoughts as they're written (near real-time)
+ - last_n:  read only the most recent N thinking steps (working memory window)
+ - cursor:  track which steps have been read to avoid re-reading old thoughts
+ - inject:  format output for direct context reflection into the next turn
+ - watch:   monitor transcript for new thoughts as they're written (near real-time)
 
 Usage:
     from adapters.self import SelfAdapter
@@ -38,7 +38,7 @@ from pathlib import Path
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Cursor — tracks how far into the transcript we've already read
+# Cursor - tracks how far into the transcript we've already read
 # ─────────────────────────────────────────────────────────────────────────────
 
 class ReadCursor:
@@ -85,7 +85,7 @@ class SelfAdapter:
     The dispatcher reads its own reasoning traces.
 
     The transcript.jsonl for the dispatcher's own conversation is written
-    in exactly the same format as sub-agent transcripts — same PLANNER_RESPONSE
+    in exactly the same format as sub-agent transcripts - same PLANNER_RESPONSE
     type, same 'thinking' field, same structure.
 
     Pointing the adapter at the dispatcher's own conversation ID gives
@@ -174,7 +174,7 @@ class SelfAdapter:
     def read_recent(self, last_n: int = 5) -> list[dict]:
         """
         Read the most recent N thinking steps from own transcript.
-        This is the working memory window — how far back the dispatcher looks.
+        This is the working memory window - how far back the dispatcher looks.
         """
         all_steps = self.read_all()
         return all_steps[-last_n:] if len(all_steps) > last_n else all_steps

@@ -1,5 +1,5 @@
 """
-AI Mind Reader — OpenAI Adapter
+AI Mind Reader - OpenAI Adapter
 
 Honest assessment of what OpenAI exposes:
 
@@ -10,12 +10,12 @@ Honest assessment of what OpenAI exposes:
 
     This is a deliberate policy decision by OpenAI, not a technical limit.
     AI Mind Reader can tell you that reasoning happened and how many tokens
-    it used — it cannot tell you what the reasoning contained.
+    it used - it cannot tell you what the reasoning contained.
 
   gpt-4o, gpt-4-turbo, gpt-4:
     No native reasoning tokens. Use structured prompting to elicit
     explicit chain-of-thought in the response itself. This is not the
-    same as capturing internal reasoning — it's asking the model to
+    same as capturing internal reasoning - it's asking the model to
     narrate its thinking in the output. Better than nothing.
 
   Summary:
@@ -26,7 +26,7 @@ Honest assessment of what OpenAI exposes:
 Usage:
     from adapters.openai_api import OpenAIAdapter
     result = OpenAIAdapter.from_api_response(response)
-    # result.thinking will be empty for o1/o3 — this is expected and documented
+    # result.thinking will be empty for o1/o3 - this is expected and documented
 """
 
 import json
@@ -38,7 +38,7 @@ from dataclasses import dataclass
 @dataclass
 class OpenAIThoughtResult:
     """Result of OpenAI thought extraction."""
-    thinking: str           # Empty for o1/o3 — reasoning content hidden by OpenAI
+    thinking: str           # Empty for o1/o3 - reasoning content hidden by OpenAI
     content: str            # The visible model output
     reasoning_tokens: int   # Count of reasoning tokens used (o1/o3 only)
     model: str              # Model identifier
@@ -135,14 +135,14 @@ class OpenAIAdapter:
 
         if is_reasoning_model:
             # Reasoning model: content ALWAYS hidden by OpenAI policy.
-            # Tainted regardless of token count — the policy hides content
+            # Tainted regardless of token count - the policy hides content
             # whether or not we can measure how much reasoning occurred.
             return OpenAIThoughtResult(
                 thinking="",
                 content=content,
                 reasoning_tokens=reasoning_tokens,
                 model=model,
-                tainted=True,  # always — OpenAI policy, not token count
+                tainted=True,  # always - OpenAI policy, not token count
                 limitation_note=_OPENAI_LIMITATION,
             )
         else:
