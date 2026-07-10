@@ -33,7 +33,7 @@ jobs:
 
       - name: Run unit tests
         run: |
-          python -m pytest tests/unit/ -v --tb=short
+          python -m pytest tests/unit/ tests/test_core_gate.py -v --tb=short
 
   lint:
     name: Syntax check
