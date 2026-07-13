@@ -13,13 +13,29 @@ import argparse
 import json
 from pathlib import Path
 
-APP_DATA_DIR = Path(r"%USERPROFILE%\.gemini\antigravity")
+import os
+
+APP_DATA_DIR = Path(
+    os.environ.get("ANTIGRAVITY_APP_DATA", Path.home() / ".gemini" / "antigravity")
+)
 BRAIN_DIR = APP_DATA_DIR / "brain"
+
+
+def _sanitize_id(conversation_id: str) -> str:
+    """A conversation ID is a name, not a path - fail closed on separators."""
+    if (not conversation_id
+            or conversation_id != os.path.basename(conversation_id)
+            or conversation_id in (".", "..")
+            or "/" in conversation_id or "\\" in conversation_id
+            or conversation_id.startswith("~")):
+        raise ValueError(
+            f"invalid conversation id (path characters rejected): {conversation_id!r}")
+    return conversation_id
 
 
 def quick_check(conversation_id: str, last_n: int = 3):
     transcript = (
-        BRAIN_DIR / conversation_id / ".system_generated" / "logs" / "transcript.jsonl"
+        BRAIN_DIR / _sanitize_id(conversation_id) / ".system_generated" / "logs" / "transcript.jsonl"
     )
     if not transcript.exists():
         print(f"No transcript found for {conversation_id}")

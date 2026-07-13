@@ -75,6 +75,22 @@ SCHEMA = CONFIG["log_schema"]
 # Platform adapters
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _sanitize_id(conversation_id: str) -> str:
+    """Reject IDs that could traverse outside the brain dir.
+
+    A conversation/agent ID is a name, not a path: no separators, no
+    parent references, no absolute anchors. Fail closed on violation.
+    """
+    if (not conversation_id
+            or conversation_id != os.path.basename(conversation_id)
+            or conversation_id in (".", "..")
+            or "/" in conversation_id or "\\" in conversation_id
+            or conversation_id.startswith("~")):
+        raise ValueError(
+            f"invalid conversation id (path characters rejected): {conversation_id!r}")
+    return conversation_id
+
+
 def get_log_path(conversation_id: str) -> Path:
     """
     Resolve the log file path for a given conversation/agent ID.
@@ -88,10 +104,10 @@ def get_log_path(conversation_id: str) -> Path:
     if platform == "antigravity":
         # Antigravity (Google DeepMind) structure
         # Brain dir is typically: <AppDataDir>/brain/
-        return BRAIN_DIR / conversation_id / ".system_generated" / "logs" / "transcript.jsonl"
+        return BRAIN_DIR / _sanitize_id(conversation_id) / ".system_generated" / "logs" / "transcript.jsonl"
 
     # Generic: brain/<conversation_id>/transcript.jsonl
-    return BRAIN_DIR / conversation_id / "transcript.jsonl"
+    return BRAIN_DIR / _sanitize_id(conversation_id) / "transcript.jsonl"
 
 
 def parse_step(line: str) -> dict | None:
